@@ -56,6 +56,7 @@ export async function POST(req: Request) {
   console.log("Webhook body:", body);
   if (evt.type === "user.created") {
     console.log("userId:", evt.data.id);
+
     console.log(evt.data.unsafe_metadata.accountType, "account type");
   }
 

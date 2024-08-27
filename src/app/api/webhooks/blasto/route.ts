@@ -1,6 +1,8 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
+import Customer from "@/lib/models/Customer";
+import Business from "@/lib/models/Business";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -58,6 +60,24 @@ export async function POST(req: Request) {
     console.log("userId:", evt.data.id);
 
     console.log(evt.data.unsafe_metadata.accountType, "account type");
+
+    if (evt.data.unsafe_metadata.accountType === "customer") {
+      const newCustomer = new Customer({
+        clerkUserId: evt.data.id,
+        email: evt.data.email_addresses[0].email_address,
+        stamps: [],
+      });
+      await newCustomer.save();
+    } else {
+      const newBusiness = new Business({
+        clerkUserId: evt.data.id,
+        name: "",
+        email: evt.data.email_addresses[0].email_address,
+        logo: "",
+        loyaltyProgram: 5,
+      });
+      await newBusiness.save();
+    }
   }
 
   return new Response("", { status: 200 });

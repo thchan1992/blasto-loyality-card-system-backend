@@ -1,8 +1,14 @@
 import mongoose, { Schema, models, model, Types, Document } from "mongoose";
 
+export interface IStamp {
+  businessId: Types.ObjectId;
+  count: number;
+}
+
 export interface ICustomer extends Document {
   clerkUserId: string;
   email: string;
+  stamps: IStamp[];
 }
 
 const customerSchema: Schema = new Schema({

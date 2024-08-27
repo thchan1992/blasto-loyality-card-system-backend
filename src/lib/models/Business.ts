@@ -5,15 +5,18 @@ export interface IBusiness extends Document {
   name: string;
   email: string;
   logo: string;
+  loyaltyProgram: number;
 }
 
 const businessSchema = new Schema({
   clerkUserId: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  logo: { type: String },
+  logo: { type: String, required: false },
   loyaltyProgram: {
-    stampsRequired: { type: Number, enum: [5, 10], required: true },
+    type: Number,
+    required: true,
+    enum: [5, 10],
   },
 });
 

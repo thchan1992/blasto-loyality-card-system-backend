@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import Customer from "@/lib/models/Customer";
 import Business from "@/lib/models/Business";
+import dbConnect from "@/lib/dbConnect";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -61,7 +62,8 @@ export async function POST(req: Request) {
 
     console.log(evt.data.unsafe_metadata.accountType, "account type");
 
-    if (evt.data.unsafe_metadata.accountType === "customer") {
+    await dbConnect();
+    if (evt.data.unsafe_metadata.accountType) {
       const newCustomer = new Customer({
         clerkUserId: evt.data.id,
         email: evt.data.email_addresses[0].email_address,

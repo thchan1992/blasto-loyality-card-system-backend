@@ -1,4 +1,4 @@
-import mongoose, { Schema, models, Types, Document } from "mongoose";
+import mongoose, { Schema, models, Types, Document, Model } from "mongoose";
 
 export interface IBusiness extends Document {
   clerkUserId: string;
@@ -10,7 +10,7 @@ export interface IBusiness extends Document {
 
 const businessSchema = new Schema({
   clerkUserId: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
+  name: { type: String, required: false },
   email: { type: String, required: true, unique: true },
   logo: { type: String, required: false },
   loyaltyProgram: {
@@ -20,5 +20,8 @@ const businessSchema = new Schema({
   },
 });
 
-const Business = mongoose.model<IBusiness>("Business", businessSchema);
+const Business: Model<IBusiness> =
+  mongoose.models.Business ||
+  mongoose.model<IBusiness>("Business", businessSchema);
+
 export default Business;

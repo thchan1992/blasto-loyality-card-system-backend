@@ -1,4 +1,11 @@
-import mongoose, { Schema, models, model, Types, Document } from "mongoose";
+import mongoose, {
+  Schema,
+  models,
+  model,
+  Types,
+  Document,
+  Model,
+} from "mongoose";
 
 export interface IStamp {
   businessId: Types.ObjectId;
@@ -26,5 +33,8 @@ const customerSchema: Schema = new Schema({
   ],
 });
 
-const Customer = mongoose.model<ICustomer>("Customer", customerSchema);
+const Customer: Model<ICustomer> =
+  mongoose.models.Customer ||
+  mongoose.model<ICustomer>("Customer", customerSchema);
+
 export default Customer;

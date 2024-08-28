@@ -77,6 +77,7 @@ export async function POST(req: Request) {
         email: evt.data.email_addresses[0].email_address,
         logo: "",
         loyaltyProgram: 5,
+        rewardsRedeemed: 0,
       });
       await newBusiness.save();
     }

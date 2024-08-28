@@ -6,6 +6,7 @@ export interface IBusiness extends Document {
   email: string;
   logo: string;
   loyaltyProgram: number;
+  rewardsRedeemed: number;
 }
 
 const businessSchema = new Schema({
@@ -18,6 +19,7 @@ const businessSchema = new Schema({
     required: true,
     enum: [5, 10],
   },
+  rewardsRedeemed: { type: Number, required: true },
 });
 
 const Business: Model<IBusiness> =

@@ -6,10 +6,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const PUT = rateLimitMiddleware(async (req: NextRequest) => {
   try {
-    // const { userId } = auth();
-    // if (!userId) {
-    //   return NextResponse.json({ status: 401, message: "Unauthorized" });
-    // }
+    const { userId } = auth();
+    if (!userId) {
+      return NextResponse.json({ status: 401, message: "Unauthorized" });
+    }
     const data = await req.json();
     const { name, logo, loyaltyProgram, clerkUserId } = data;
 

@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
 import Business from "@/lib/models/Business";
 import rateLimitMiddleware from "@/lib/rateLimit";
-import { auth } from "@clerk/nextjs/dist/types/server";
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export const PUT = rateLimitMiddleware(async (req: NextRequest) => {

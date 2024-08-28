@@ -55,11 +55,9 @@ export const Profile = () => {
       ...prevBusiness,
       name: updatedName,
     }));
-    console.log(business.loyaltyProgram, "loyal program");
   };
 
   const handleLoyaltyProgramChange = () => {
-    console.log("click");
     setBusiness((prevBusiness) => ({
       ...prevBusiness,
       loyaltyProgram: prevBusiness.loyaltyProgram === 5 ? 10 : 5,

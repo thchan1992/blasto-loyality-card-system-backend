@@ -1,4 +1,4 @@
-export const fetchBusiness = async (id: string): Promise<Response> => {
+export const fetchBusinessAPI = async (id: string): Promise<Response> => {
   try {
     const response = await fetch("/api/business/get/" + id);
     return response;

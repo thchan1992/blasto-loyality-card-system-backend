@@ -5,8 +5,10 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ThemeToggler from "./ThemeToggler";
 import menuData from "./menuData";
+import { SignOutButton, useUser } from "@clerk/nextjs";
 
 const Header = () => {
+  const { isLoaded, isSignedIn, user } = useUser();
   // Navbar toggle
   const [navbarOpen, setNavbarOpen] = useState(false);
   const navbarToggleHandler = () => {
@@ -43,7 +45,7 @@ const Header = () => {
       <header
         className={`header left-0 top-0 z-40 flex w-full items-center ${
           sticky
-            ? "dark:bg-gray-dark dark:shadow-sticky-dark fixed z-[9999] bg-white !bg-opacity-80 shadow-sticky backdrop-blur-sm transition"
+            ? "fixed z-[9999] bg-white !bg-opacity-80 shadow-sticky backdrop-blur-sm transition dark:bg-gray-dark dark:shadow-sticky-dark"
             : "absolute bg-transparent"
         }`}
       >
@@ -155,22 +157,51 @@ const Header = () => {
                         )}
                       </li>
                     ))}
+                    {isSignedIn ? (
+                      <>
+                        <li className="group relative">
+                          <Link
+                            href={"/profile"}
+                            className={`dark:text-thirdColor flex py-2 text-base text-dark group-hover:opacity-70 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6`}
+                          >
+                            Profile
+                          </Link>
+                        </li>
+                        <li className="group relative">
+                          <Link
+                            href={"/scan"}
+                            className={`dark:text-thirdColor flex py-2 text-base text-dark group-hover:opacity-70 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6`}
+                          >
+                            Scan
+                          </Link>
+                        </li>
+                      </>
+                    ) : undefined}
                   </ul>
                 </nav>
               </div>
               <div className="flex items-center justify-end pr-16 lg:pr-0">
-                <Link
-                  href="/signin"
-                  className="hidden px-7 py-3 text-base font-medium text-dark hover:opacity-70 dark:text-white md:block"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/signup"
-                  className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-primary px-8 py-3 text-base font-medium text-white transition duration-300 hover:bg-opacity-90 md:block md:px-9 lg:px-6 xl:px-9"
-                >
-                  Sign Up
-                </Link>
+                {!isSignedIn ? (
+                  <>
+                    <Link
+                      href="/signin"
+                      className="hidden px-7 py-3 text-base font-bold text-dark hover:opacity-70 dark:text-white md:block"
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/signup"
+                      className="ease-in-up bg-sixthColor hidden rounded-md px-8 py-3 text-base font-bold text-white transition duration-300 hover:bg-opacity-90 hover:shadow-signUp md:block md:px-9 lg:px-6 xl:px-9"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                ) : (
+                  // <UserButton />
+                  <SignOutButton>
+                    <button className="btn btn-active">Sign Out</button>
+                  </SignOutButton>
+                )}
                 <div>
                   <ThemeToggler />
                 </div>

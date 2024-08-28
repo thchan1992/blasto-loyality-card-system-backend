@@ -157,6 +157,26 @@ const Header = () => {
                         )}
                       </li>
                     ))}
+                    {isSignedIn ? (
+                      <>
+                        <li className="group relative">
+                          <Link
+                            href={"/profile"}
+                            className={`dark:text-thirdColor flex py-2 text-base text-dark group-hover:opacity-70 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6`}
+                          >
+                            Profile
+                          </Link>
+                        </li>
+                        <li className="group relative">
+                          <Link
+                            href={"/scan"}
+                            className={`dark:text-thirdColor flex py-2 text-base text-dark group-hover:opacity-70 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6`}
+                          >
+                            Scan
+                          </Link>
+                        </li>
+                      </>
+                    ) : undefined}
                   </ul>
                 </nav>
               </div>

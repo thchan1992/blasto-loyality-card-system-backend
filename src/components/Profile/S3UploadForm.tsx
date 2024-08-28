@@ -10,6 +10,7 @@ export const UploadForm = ({
   onFileUrlChange,
   oldFileUrl,
 }: UploadFormProps) => {
+  console.log(oldFileUrl, "old File URL");
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 

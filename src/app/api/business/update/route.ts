@@ -11,7 +11,9 @@ export const PUT = rateLimitMiddleware(async (req: NextRequest) => {
       return NextResponse.json({ status: 401, message: "Unauthorized" });
     }
     const data = await req.json();
-    const { name, logo, loyaltyProgram, clerkUserId } = data;
+    const { name, logo, loyaltyProgram, clerkUserId } = data.business;
+
+    console.log(name, logo, loyaltyProgram, clerkUserId, " dataaa");
 
     if (!clerkUserId || !loyaltyProgram || !logo || !name) {
       return NextResponse.json({

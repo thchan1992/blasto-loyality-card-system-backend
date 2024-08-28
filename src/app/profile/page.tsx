@@ -1,5 +1,5 @@
 import Breadcrumb from "@/components/Common/Breadcrumb";
-import { Profile } from "@/components/Profile";
+import { Profile } from "@/components/Profile/index";
 
 import React from "react";
 

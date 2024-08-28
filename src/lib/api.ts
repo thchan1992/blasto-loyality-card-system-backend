@@ -1,8 +1,8 @@
 import { Business } from "./types/Business";
 
-export const fetchBusinessAPI = async (id: string): Promise<Response> => {
+export const fetchBusinessAPI = async (): Promise<Response> => {
   try {
-    const response = await fetch("/api/business/get/" + id);
+    const response = await fetch("/api/business/get/");
     return response;
   } catch (e) {
     throw new Error(`Network Error Occurred`);
@@ -11,7 +11,7 @@ export const fetchBusinessAPI = async (id: string): Promise<Response> => {
 
 export const changeBusinessAPI = async (
   business: Business,
-): Promise<Response> => {
+): Promise<Business> => {
   try {
     console.log(business, "business data");
     const response = await fetch("/api/business/update", {
@@ -25,9 +25,9 @@ export const changeBusinessAPI = async (
     });
 
     const data = await response.json();
-    console.log(data, " api  data");
 
-    return data;
+    const { __v, _id, ...filteredBusiness } = data.data;
+    return filteredBusiness;
   } catch (e) {
     throw new Error(`Network Error Occurred`);
   }

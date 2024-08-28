@@ -29,11 +29,9 @@ export const Profile = () => {
   }, []);
 
   const handleChangeBusiness = async () => {
-    console.log("pressed");
     try {
-      const res = await changeBusinessAPI(business);
-      // setBusiness(res);
-      console.log(res, "Response");
+      const res: Business = await changeBusinessAPI(business);
+      setBusiness(res);
     } catch (e) {
       console.log(e.message);
     }
@@ -41,9 +39,7 @@ export const Profile = () => {
 
   const fetchBusiness = async () => {
     try {
-      const response = await fetchBusinessAPI(
-        "user_2lEyLuLIEBbwEClWhluLCG2JAcH",
-      );
+      const response = await fetchBusinessAPI();
       const isSuccess = await handleApiErrors(response);
       if (!isSuccess) return;
       const data = await response.json();

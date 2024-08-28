@@ -5,6 +5,7 @@ import { IBusiness } from "@/lib/models/Business";
 import { Business } from "@/lib/types/Business";
 import { Bubblegum_Sans } from "next/font/google";
 import React, { useEffect, useState } from "react";
+import { UploadForm } from "./S3UploadForm";
 
 export const Profile = () => {
   const { handleApiErrors } = useHandleApiErrors();
@@ -64,11 +65,24 @@ export const Profile = () => {
     }));
   };
 
+  const handleLogoChange = (url: string) => {
+    console.log(url, " URL LOGO");
+    const updatedLogo = url;
+    setBusiness((prevBusiness) => ({
+      ...prevBusiness,
+      logo: updatedLogo,
+    }));
+  };
+
   return (
     <div className="flex items-center justify-center">
       profile
       {!isLoading && (
         <div>
+          <UploadForm
+            onFileUrlChange={handleLogoChange}
+            oldFileUrl={business.logo}
+          />
           <input
             value={business.name}
             type="text"

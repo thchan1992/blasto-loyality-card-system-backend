@@ -7,6 +7,7 @@ import mongoose, { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = rateLimitMiddleware(async (req: NextRequest) => {
+  const session = await mongoose.startSession();
   try {
     const { userId } = auth();
     if (!userId) {
@@ -14,25 +15,37 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     }
 
     const data = await req.json();
-    const { customerId, businessId, stampNum } = data;
+    const {
+      customerId,
+      // businessId,
+      stampNum,
+    } = data;
 
-    if (!customerId || !businessId || !stampNum) {
+    if (
+      !customerId ||
+      // !businessId ||
+      !stampNum
+    ) {
       return NextResponse.json({
         status: 404,
         message: "Missing required fields",
       });
     }
 
-    if (businessId !== userId) {
-      return NextResponse.json({
-        status: 401,
-        message: "No Authorized",
-      });
-    }
+    // if (businessId !== userId) {
+    //   return NextResponse.json({
+    //     status: 401,
+    //     message: "No Authorized",
+    //   });
+    // }
 
     await dbConnect();
     //check business id to see if they are authorised to do the transaction.
-    const business = await Business.findOne({ clerkUserId: businessId });
+    const business = await Business.findOne({
+      clerkUserId:
+        // businessId
+        userId,
+    });
     if (!business) {
       return NextResponse.json({
         status: 404,
@@ -63,22 +76,23 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
         count: 1,
       };
       customer.stamps.push(newStamp);
-      customer.stamps.push({
-        businessId: new Types.ObjectId(business._id),
-        count: 1,
-      });
     } else {
       //step four: if it dose exists, just increment the count by 1.
       existingStamp.count += 1;
     }
-
-    await customer.save();
+    await customer.save({ session });
+    business.credit -= 1;
+    await business.save({ session });
+    await session.commitTransaction();
+    session.endSession();
 
     return NextResponse.json(
       { data: "A new stamp has been given." },
       { status: 200 },
     );
   } catch (e) {
+    await session.abortTransaction();
+    session.endSession();
     return NextResponse.json(
       { error: e.message || "Internal Server Error" },
       { status: 500 },

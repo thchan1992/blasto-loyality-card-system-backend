@@ -13,7 +13,6 @@ export const changeBusinessAPI = async (
   business: Business,
 ): Promise<Business> => {
   try {
-    console.log(business, "business data");
     const response = await fetch("/api/business/update", {
       method: "PUT",
       headers: {
@@ -26,8 +25,34 @@ export const changeBusinessAPI = async (
 
     const data = await response.json();
 
-    const { __v, _id, ...filteredBusiness } = data.data;
+    const { __v, ...filteredBusiness } = data.data;
     return filteredBusiness;
+  } catch (e) {
+    throw new Error(`Network Error Occurred`);
+  }
+};
+
+export const giveStampAPI = async (
+  customerId: string,
+  // businessId: string,
+  stampNum: number,
+): Promise<Boolean> => {
+  try {
+    const response = await fetch("/api/stamp/give", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        customerId,
+        // businessId,
+        stampNum,
+      }),
+    });
+    if (response.status !== 200) {
+      return false;
+    }
+    return true;
   } catch (e) {
     throw new Error(`Network Error Occurred`);
   }

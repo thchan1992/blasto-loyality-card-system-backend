@@ -26,6 +26,8 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       // !businessId ||
       !stampNum
     ) {
+      await session.abortTransaction();
+      session.endSession();
       return NextResponse.json({
         status: 404,
         message: "Missing required fields",
@@ -47,16 +49,31 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
         userId,
     });
     if (!business) {
+      await session.abortTransaction();
+      session.endSession();
       return NextResponse.json({
         status: 404,
         message: "Business not found",
       });
     }
 
+    if (business.credit - 1 < 0) {
+      await session.abortTransaction();
+      session.endSession();
+      return NextResponse.json({
+        status: 400,
+        message: "Fund not enough",
+      });
+    } else {
+      business.credit -= 1;
+    }
+
     //give one stamp to customer:
     //step one: check if the customer is in the database
     const customer = await Customer.findOne({ clerkUserId: customerId });
     if (!customer) {
+      await session.abortTransaction();
+      session.endSession();
       return NextResponse.json({
         status: 404,
         message: "Customer not found",
@@ -71,6 +88,8 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
 
     //step three: if it dosent exists, add one object based on IStamp
     if (!existingStamp) {
+      await session.abortTransaction();
+      session.endSession();
       const newStamp: IStamp = {
         businessId: new Types.ObjectId(business._id),
         count: 1,
@@ -80,9 +99,8 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       //step four: if it dose exists, just increment the count by 1.
       existingStamp.count += 1;
     }
-    await customer.save({ session });
-    business.credit -= 1;
     await business.save({ session });
+    await customer.save({ session });
     await session.commitTransaction();
     session.endSession();
 

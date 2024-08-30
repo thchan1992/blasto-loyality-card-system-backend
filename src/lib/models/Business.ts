@@ -1,6 +1,7 @@
 import mongoose, { Schema, models, Types, Document, Model } from "mongoose";
 
 export interface IBusiness extends Document {
+  _id: Types.ObjectId;
   clerkUserId: string;
   name: string;
   email: string;
@@ -9,7 +10,7 @@ export interface IBusiness extends Document {
   rewardsRedeemed: number;
 }
 
-const businessSchema = new Schema({
+const businessSchema = new Schema<IBusiness>({
   clerkUserId: { type: String, required: true, unique: true },
   name: { type: String, required: false },
   email: { type: String, required: true, unique: true },

@@ -1,0 +1,87 @@
+import dbConnect from "@/lib/dbConnect";
+import Business from "@/lib/models/Business";
+import Customer, { ICustomer, IStamp } from "@/lib/models/Customer";
+import rateLimitMiddleware from "@/lib/rateLimit";
+import { auth } from "@clerk/nextjs/server";
+import mongoose, { Types } from "mongoose";
+import { NextRequest, NextResponse } from "next/server";
+
+export const POST = rateLimitMiddleware(async (req: NextRequest) => {
+  try {
+    const { userId } = auth();
+    if (!userId) {
+      return NextResponse.json({ status: 401, message: "Unauthorized" });
+    }
+
+    const data = await req.json();
+    const { customerId, businessId, stampNum } = data;
+
+    if (!customerId || !businessId || !stampNum) {
+      return NextResponse.json({
+        status: 404,
+        message: "Missing required fields",
+      });
+    }
+
+    if (businessId !== userId) {
+      return NextResponse.json({
+        status: 401,
+        message: "No Authorized",
+      });
+    }
+
+    await dbConnect();
+    //check business id to see if they are authorised to do the transaction.
+    const business = await Business.findOne({ clerkUserId: businessId });
+    if (!business) {
+      return NextResponse.json({
+        status: 404,
+        message: "Business not found",
+      });
+    }
+
+    //give one stamp to customer:
+    //step one: check if the customer is in the database
+    const customer = await Customer.findOne({ clerkUserId: customerId });
+    if (!customer) {
+      return NextResponse.json({
+        status: 404,
+        message: "Customer not found",
+      });
+    }
+
+    //step two: if the business dose exist in the stamps array
+
+    const existingStamp = customer.stamps.find(
+      (stamp) => stamp.businessId.toString() === business._id.toString(),
+    );
+
+    //step three: if it dosent exists, add one object based on IStamp
+    if (!existingStamp) {
+      const newStamp: IStamp = {
+        businessId: new Types.ObjectId(business._id),
+        count: 1,
+      };
+      customer.stamps.push(newStamp);
+      customer.stamps.push({
+        businessId: new Types.ObjectId(business._id),
+        count: 1,
+      });
+    } else {
+      //step four: if it dose exists, just increment the count by 1.
+      existingStamp.count += 1;
+    }
+
+    await customer.save();
+
+    return NextResponse.json(
+      { data: "A new stamp has been given." },
+      { status: 200 },
+    );
+  } catch (e) {
+    return NextResponse.json(
+      { error: e.message || "Internal Server Error" },
+      { status: 500 },
+    );
+  }
+});

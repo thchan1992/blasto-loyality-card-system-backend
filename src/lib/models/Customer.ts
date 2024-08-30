@@ -13,12 +13,13 @@ export interface IStamp {
 }
 
 export interface ICustomer extends Document {
+  _id: Types.ObjectId;
   clerkUserId: string;
   email: string;
   stamps: IStamp[];
 }
 
-const customerSchema: Schema = new Schema({
+const customerSchema: Schema = new Schema<ICustomer>({
   clerkUserId: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   stamps: [
@@ -34,7 +35,6 @@ const customerSchema: Schema = new Schema({
 });
 
 const Customer: Model<ICustomer> =
-  mongoose.models.Customer ||
-  mongoose.model<ICustomer>("Customer", customerSchema);
+  models.Customer || model<ICustomer>("Customer", customerSchema);
 
 export default Customer;

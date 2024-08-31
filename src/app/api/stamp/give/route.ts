@@ -26,8 +26,6 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       // !businessId ||
       !stampNum
     ) {
-      await session.abortTransaction();
-      session.endSession();
       return NextResponse.json({
         status: 404,
         message: "Missing required fields",
@@ -42,6 +40,7 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     // }
 
     await dbConnect();
+    session.startTransaction();
     //check business id to see if they are authorised to do the transaction.
     const business = await Business.findOne({
       clerkUserId:
@@ -57,7 +56,10 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       });
     }
 
-    if (business.credit - 1 < 0) {
+    console.log(business, "business found");
+
+    //take one credit from the business
+    if (business.credit === 0) {
       await session.abortTransaction();
       session.endSession();
       return NextResponse.json({
@@ -65,7 +67,9 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
         message: "Fund not enough",
       });
     } else {
-      business.credit -= 1;
+      console.log(business.credit, "credit");
+      business.credit--;
+      await business.save({ session });
     }
 
     //give one stamp to customer:
@@ -80,6 +84,8 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       });
     }
 
+    console.log(customer, "customer found");
+
     //step two: if the business dose exist in the stamps array
 
     const existingStamp = customer.stamps.find(
@@ -88,8 +94,6 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
 
     //step three: if it dosent exists, add one object based on IStamp
     if (!existingStamp) {
-      await session.abortTransaction();
-      session.endSession();
       const newStamp: IStamp = {
         businessId: new Types.ObjectId(business._id),
         count: 1,
@@ -99,7 +103,7 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       //step four: if it dose exists, just increment the count by 1.
       existingStamp.count += 1;
     }
-    await business.save({ session });
+
     await customer.save({ session });
     await session.commitTransaction();
     session.endSession();
@@ -111,6 +115,7 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
   } catch (e) {
     await session.abortTransaction();
     session.endSession();
+    console.log(e.message, "e.message");
     return NextResponse.json(
       { error: e.message || "Internal Server Error" },
       { status: 500 },

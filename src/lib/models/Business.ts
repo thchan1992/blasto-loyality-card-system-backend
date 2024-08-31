@@ -22,7 +22,7 @@ const businessSchema = new Schema<IBusiness>({
     enum: [5, 10],
   },
   rewardsRedeemed: { type: Number, required: true },
-  credit: { type: Number, required: true, default: 0 },
+  credit: { type: Number, required: true },
 });
 
 const Business: Model<IBusiness> =

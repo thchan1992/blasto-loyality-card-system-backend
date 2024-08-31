@@ -1,11 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { changeBusinessAPI, fetchBusinessAPI, giveStampAPI } from "@/lib/api";
-import useHandleApiErrors from "@/lib/hook/useHandlerApiErrors";
-import { IBusiness } from "@/lib/models/Business";
-import { Business } from "@/lib/types/Business";
-import { Bubblegum_Sans } from "next/font/google";
-import React, { useEffect, useState } from "react";
+import { giveStampAPI } from "@/lib/api";
+
+import React, { useState } from "react";
 
 import { Scanner } from "@yudiel/react-qr-scanner";
 export const Scan = () => {
@@ -25,7 +22,7 @@ export const Scan = () => {
   };
 
   const onConfirm = async () => {
-    const res = await giveStampAPI("user_2lEyIkcUadDD4WSMZPrsBQ7D5YH", 1);
+    const res = await giveStampAPI(customerId, 1);
     console.log(res);
   };
   return (

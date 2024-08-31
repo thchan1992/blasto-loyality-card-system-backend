@@ -78,6 +78,7 @@ export async function POST(req: Request) {
         logo: "",
         loyaltyProgram: 5,
         rewardsRedeemed: 0,
+        credit: 100,
       });
       await newBusiness.save();
     }

@@ -6,7 +6,8 @@ import { auth } from "@clerk/nextjs/server";
 import mongoose, { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
-export const POST = rateLimitMiddleware(async (req: NextRequest) => {
+// export const POST = rateLimitMiddleware(async (req: NextRequest) => {
+export const POST = async (req: NextRequest) => {
   const session = await mongoose.startSession();
   try {
     const { userId } = auth();
@@ -39,15 +40,21 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     //   });
     // }
 
+    console.log("Starting transaction");
     await dbConnect();
     session.startTransaction();
+
     //check business id to see if they are authorised to do the transaction.
+    console.log("Looking up business:", userId);
     const business = await Business.findOne({
       clerkUserId:
         // businessId
         userId,
     });
+    console.log("Business lookup result:", business);
+
     if (!business) {
+      console.log("Business not found, aborting transaction");
       await session.abortTransaction();
       session.endSession();
       return NextResponse.json({
@@ -55,8 +62,6 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
         message: "Business not found",
       });
     }
-
-    console.log(business, "business found");
 
     //take one credit from the business
     if (business.credit === 0) {
@@ -67,7 +72,7 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
         message: "Fund not enough",
       });
     } else {
-      console.log(business.credit, "credit");
+      console.log("Business found, checking credit:", business.credit);
       business.credit--;
       await business.save({ session });
     }
@@ -75,7 +80,9 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     //give one stamp to customer:
     //step one: check if the customer is in the database
     const customer = await Customer.findOne({ clerkUserId: customerId });
+    console.log("Customer lookup result:", customer);
     if (!customer) {
+      console.log("Customer not found, aborting transaction");
       await session.abortTransaction();
       session.endSession();
       return NextResponse.json({
@@ -87,13 +94,14 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     console.log(customer, "customer found");
 
     //step two: if the business dose exist in the stamps array
-
+    console.log("Customer found, updating stamps");
     const existingStamp = customer.stamps.find(
       (stamp) => stamp.businessId.toString() === business._id.toString(),
     );
 
     //step three: if it dosent exists, add one object based on IStamp
     if (!existingStamp) {
+      console.log("Stamp not found, creating new one");
       const newStamp: IStamp = {
         businessId: new Types.ObjectId(business._id),
         count: 1,
@@ -101,11 +109,14 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       customer.stamps.push(newStamp);
     } else {
       //step four: if it dose exists, just increment the count by 1.
+      console.log("Stamp found, incrementing count");
       existingStamp.count += 1;
     }
 
     await customer.save({ session });
+    console.log("Customer stamps updated:", customer.stamps);
     await session.commitTransaction();
+    console.log("Transaction committed successfully");
     session.endSession();
 
     return NextResponse.json(
@@ -121,4 +132,5 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       { status: 500 },
     );
   }
-});
+  // });
+};

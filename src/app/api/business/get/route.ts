@@ -1,9 +1,9 @@
 import dbConnect from "@/lib/dbConnect";
 import Business from "@/lib/models/Business";
 import rateLimitMiddleware from "@/lib/rateLimit";
+import { getTotalStampsForBusiness } from "@/util/getTotalStampsForBusiness";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
-import { getTotalStampsForBusiness } from "../../stamp/view/route";
 
 export const GET = rateLimitMiddleware(async (req: NextRequest) => {
   try {

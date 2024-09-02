@@ -152,9 +152,11 @@ import { auth } from "@clerk/nextjs/server";
 import mongoose, { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
-export const POST = async (req: NextRequest) => {
-  console.log("requested request");
-
+export const POST = rateLimitMiddleware(async (req: NextRequest) => {
+  const { userId } = auth();
+  if (!userId) {
+    return NextResponse.json({ status: 401, message: "Unauthorized" });
+  }
   let session: any;
 
   try {
@@ -174,11 +176,6 @@ export const POST = async (req: NextRequest) => {
   }
 
   try {
-    const { userId } = auth();
-    if (!userId) {
-      return NextResponse.json({ status: 401, message: "Unauthorized" });
-    }
-
     const data = await req.json();
     const { customerId, stampNum } = data;
 
@@ -282,4 +279,4 @@ export const POST = async (req: NextRequest) => {
       { status: 500 },
     );
   }
-};
+});

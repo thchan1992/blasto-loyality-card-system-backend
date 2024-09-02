@@ -49,11 +49,34 @@ export const giveStampAPI = async (
         stampNum,
       }),
     });
-    if (response.status !== 200) {
+    const data = await response.json();
+    if (data.status !== 200) {
       return false;
     }
     return true;
   } catch (e) {
     throw new Error(`Network Error Occurred`);
+  }
+};
+export const giveRewardAPI = async (customerId: string): Promise<boolean> => {
+  try {
+    const response = await fetch("/api/stamp/redeem", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        customerId,
+      }),
+    });
+
+    const data = await response.json();
+    if (data.status !== 200) {
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error("Network error:", e);
+    return false;
   }
 };

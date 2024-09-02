@@ -51,26 +51,25 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       session.endSession();
       return NextResponse.json({
         status: 404,
-        message: "Customer not found",
+        message: "Reward not found",
       });
     }
 
     const existingStamp = customer.stamps.find(
-      (stamp) =>
-        stamp.businessId.toString() === business._id.toString() &&
-        stamp.count >= business.loyaltyProgram,
+      (stamp) => stamp.businessId.toString() === business._id.toString(),
     );
 
-    if (!existingStamp) {
+    if (!existingStamp || existingStamp.count < business.loyaltyProgram) {
       await session.abortTransaction();
       session.endSession();
       return NextResponse.json({
         status: 404,
         message: "No reward found",
       });
-    } else {
-      existingStamp.count -= business.loyaltyProgram;
     }
+
+    existingStamp.count -= business.loyaltyProgram;
+
     await customer.save({ session });
     await session.commitTransaction();
 

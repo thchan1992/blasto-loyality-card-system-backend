@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { giveStampAPI } from "@/lib/api";
+import { giveRewardAPI, giveStampAPI } from "@/lib/api";
 
 import React, { useState } from "react";
 
@@ -25,6 +25,11 @@ export const Scan = () => {
     const res = await giveStampAPI(customerId, 1);
     console.log(res);
   };
+
+  const onRewardConfirm = async () => {
+    const res = await giveRewardAPI(customerId);
+    console.log(res);
+  };
   return (
     <div className="flex items-center justify-center">
       <div className="flex h-1/2 w-full flex-col pl-2 pr-2">
@@ -37,14 +42,23 @@ export const Scan = () => {
           />
         )}
         <button
-          className="btn btn-primary"
+          className="btn btn-primary m-1"
           onClick={() => {
             showCamera ? setShowCamera(false) : setShowCamera(true);
           }}
         >
           {showCamera ? "Close Camera" : "Open Camera"}
         </button>
-        {customerId !== "" && <button onClick={onConfirm}>Confirm</button>}
+        {customerId !== "" && (
+          <>
+            <button className="btn btn-primary m-1" onClick={onConfirm}>
+              Give Stamp
+            </button>
+            <button className="btn btn-primary m-1" onClick={onRewardConfirm}>
+              Give Reward
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

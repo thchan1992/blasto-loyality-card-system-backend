@@ -9,7 +9,15 @@ import { NextRequest, NextResponse } from "next/server";
 // export const POST = rateLimitMiddleware(async (req: NextRequest) => {
 export const POST = async (req: NextRequest) => {
   console.log("requested request");
-  const session = await mongoose.startSession();
+
+  let session: any;
+
+  try {
+    session = await mongoose.startSession();
+  } catch (e) {
+    console.log(e, "mongodb error");
+  }
+
   try {
     const { userId } = auth();
     if (!userId) {

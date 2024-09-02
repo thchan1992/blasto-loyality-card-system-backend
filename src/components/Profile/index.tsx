@@ -13,6 +13,8 @@ export const Profile = () => {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  const [totalStamps, setTotalStamps] = useState<number>(0);
+
   const [business, setBusiness] = useState<Business>({
     clerkUserId: "",
     name: "",
@@ -20,6 +22,7 @@ export const Profile = () => {
     logo: "",
     loyaltyProgram: 5,
     rewardsRedeemed: 0,
+    credit: 0,
   });
   useEffect(() => {
     fetchBusiness();
@@ -50,8 +53,10 @@ export const Profile = () => {
         loyaltyProgram: data.data.loyaltyProgram,
         name: data.data.name,
         rewardsRedeemed: data.data.rewardsRedeemed,
+        credit: data.data.credit,
       };
       setBusiness(businessFetched);
+      setTotalStamps(data.totalStamps);
       console.log(businessFetched, "business Fetched");
     } catch (e) {
       console.log(e.message);
@@ -91,6 +96,7 @@ export const Profile = () => {
             </figure>
             <div className="card-body">
               <h2 className="card-title">Profile</h2>
+              Total Stamps: {totalStamps}
               <p className="flex flex-col items-center justify-center border-2 p-1">
                 <UploadForm
                   onFileUrlChange={handleLogoChange}

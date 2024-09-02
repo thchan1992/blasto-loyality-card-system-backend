@@ -5,4 +5,5 @@ export type Business = {
   logo: string;
   loyaltyProgram: number;
   rewardsRedeemed: number;
+  credit: number;
 };

@@ -3,6 +3,7 @@ import Business from "@/lib/models/Business";
 import rateLimitMiddleware from "@/lib/rateLimit";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
+import { getTotalStampsForBusiness } from "../../stamp/view/route";
 
 export const GET = rateLimitMiddleware(async (req: NextRequest) => {
   try {
@@ -24,7 +25,12 @@ export const GET = rateLimitMiddleware(async (req: NextRequest) => {
       });
     }
 
-    return NextResponse.json({ data: business }, { status: 200 });
+    const totalStamps = await getTotalStampsForBusiness(business._id);
+
+    return NextResponse.json(
+      { data: business, totalStamps: totalStamps },
+      { status: 200 },
+    );
   } catch (e) {
     return NextResponse.json(
       { error: e.message || "Internal Server Error" },

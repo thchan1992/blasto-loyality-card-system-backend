@@ -20,10 +20,10 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     const { customerId, stampNum } = data;
 
     if (!customerId || !stampNum) {
-      return NextResponse.json({
-        status: 404,
-        message: "Missing required fields",
-      });
+      return NextResponse.json(
+        { message: "Missing field required" },
+        { status: 404 },
+      );
     }
 
     session.startTransaction();
@@ -38,20 +38,17 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     if (!business) {
       await session.abortTransaction();
       session.endSession();
-      return NextResponse.json({
-        status: 404,
-        message: "Business not found",
-      });
+      return NextResponse.json(
+        { message: "Business not found" },
+        { status: 404 },
+      );
     }
 
     //take one credit from the business
     if (business.credit === 0) {
       await session.abortTransaction();
       session.endSession();
-      return NextResponse.json({
-        status: 400,
-        message: "Fund not enough",
-      });
+      return NextResponse.json({ message: "Fund not enough" }, { status: 404 });
     } else {
       business.credit--;
       await business.save({ session });
@@ -64,10 +61,10 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     if (!customer) {
       await session.abortTransaction();
       session.endSession();
-      return NextResponse.json({
-        status: 404,
-        message: "Customer not found",
-      });
+      return NextResponse.json(
+        { message: "Customer not found" },
+        { status: 404 },
+      );
     }
 
     //step two: if the business dose exist in the stamps array

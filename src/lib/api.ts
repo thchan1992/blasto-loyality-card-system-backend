@@ -49,8 +49,8 @@ export const giveStampAPI = async (
         stampNum,
       }),
     });
-    const data = await response.json();
-    if (data.status !== 200) {
+
+    if (response.status !== 200) {
       return false;
     }
     return true;
@@ -70,8 +70,7 @@ export const giveRewardAPI = async (customerId: string): Promise<boolean> => {
       }),
     });
 
-    const data = await response.json();
-    if (data.status !== 200) {
+    if (response.status !== 200) {
       return false;
     }
     return true;

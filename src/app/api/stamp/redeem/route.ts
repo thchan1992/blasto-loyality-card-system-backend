@@ -8,8 +8,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const POST = rateLimitMiddleware(async (req: NextRequest) => {
   const { userId } = auth();
+
   if (!userId) {
-    return NextResponse.json({ status: 401, message: "Unauthorized" });
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   await dbConnect();
@@ -19,10 +20,10 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     const { customerId } = data;
 
     if (!customerId) {
-      return NextResponse.json({
-        status: 404,
-        message: "Missing required fields",
-      });
+      return NextResponse.json(
+        { message: "Missing field required" },
+        { status: 404 },
+      );
     }
     session.startTransaction();
     //check business id to see if they are authorised to do the transaction.
@@ -35,10 +36,10 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     if (!business) {
       await session.abortTransaction();
       session.endSession();
-      return NextResponse.json({
-        status: 404,
-        message: "Business not found",
-      });
+      return NextResponse.json(
+        { message: "Business not found" },
+        { status: 404 },
+      );
     }
 
     business.rewardsRedeemed++;
@@ -49,10 +50,7 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     if (!customer) {
       await session.abortTransaction();
       session.endSession();
-      return NextResponse.json({
-        status: 404,
-        message: "Reward not found",
-      });
+      return NextResponse.json({ message: "Fund not enough" }, { status: 404 });
     }
 
     const existingStamp = customer.stamps.find(
@@ -62,10 +60,10 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     if (!existingStamp || existingStamp.count < business.loyaltyProgram) {
       await session.abortTransaction();
       session.endSession();
-      return NextResponse.json({
-        status: 404,
-        message: "No reward found",
-      });
+      return NextResponse.json(
+        { message: "Customer not found" },
+        { status: 404 },
+      );
     }
 
     existingStamp.count -= business.loyaltyProgram;

@@ -10,7 +10,7 @@ export const GET = rateLimitMiddleware(async (req: NextRequest) => {
     const { userId } = auth();
 
     if (!userId) {
-      return NextResponse.json({ status: 401, message: "Unauthorized" });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     await dbConnect();
     const business = await Business.findOne({

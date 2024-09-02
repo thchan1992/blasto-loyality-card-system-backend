@@ -9,7 +9,7 @@ export const GET = rateLimitMiddleware(async (req: NextRequest) => {
   try {
     const { userId } = auth();
     if (!userId) {
-      return NextResponse.json({ status: 401, message: "Unauthorized" });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     // const clerkUserId = params.id;
 
@@ -19,10 +19,10 @@ export const GET = rateLimitMiddleware(async (req: NextRequest) => {
     console.log(userId, "userId from clerk");
     console.log(business.clerkUserId, "clerkUserID from mongo");
     if (business.clerkUserId !== userId) {
-      return NextResponse.json({
-        status: 401,
-        message: "You do not have the access.",
-      });
+      return NextResponse.json(
+        { message: "You do not have the access." },
+        { status: 401 },
+      );
     }
 
     const totalStamps = await getTotalStampsForBusiness(business._id);

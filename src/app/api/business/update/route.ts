@@ -16,10 +16,10 @@ export const PUT = rateLimitMiddleware(async (req: NextRequest) => {
     console.log(name, logo, loyaltyProgram, clerkUserId, " dataaa");
 
     if (!clerkUserId || !loyaltyProgram || !logo || !name) {
-      return NextResponse.json({
-        status: 404,
-        message: "Missing required fields",
-      });
+      return NextResponse.json(
+        { message: "Missing field required" },
+        { status: 404 },
+      );
     }
 
     await dbConnect();
@@ -30,10 +30,10 @@ export const PUT = rateLimitMiddleware(async (req: NextRequest) => {
     );
 
     if (!updatedBusiness) {
-      return NextResponse.json({
-        status: 404,
-        message: "Business not found",
-      });
+      return NextResponse.json(
+        { message: "Business not found" },
+        { status: 404 },
+      );
     }
     return NextResponse.json({ data: updatedBusiness }, { status: 200 });
   } catch (e) {

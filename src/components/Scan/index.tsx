@@ -30,9 +30,33 @@ export const Scan = () => {
     const res = await giveRewardAPI(customerId);
     console.log(res);
   };
+
+  const handlePayment = async () => {
+    try {
+      const response = await fetch("/api/payment/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        window.location.href = data.url;
+        // console.log(data, "payment successed");
+      } else {
+        console.error("Failed to create checkout session");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   return (
     <div className="flex items-center justify-center">
       <div className="flex h-1/2 w-full flex-col pl-2 pr-2">
+        <button className="btn btn-primary" onClick={handlePayment}>
+          Pay More
+        </button>
         customer id: {customerId}
         {showCamera && (
           <Scanner

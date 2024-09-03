@@ -20,11 +20,14 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-modal-video": "^2.0.1",
-    "svix": "^1.30.0"
+    "stripe": "^16.9.0",
+    "svix": "^1.30.0",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.8.9",
     "@types/react": "^18.2.33",
+    "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.17",
     "daisyui": "^4.12.10",
     "postcss": "^8.4.35",

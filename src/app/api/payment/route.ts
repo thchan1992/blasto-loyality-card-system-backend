@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   const { userId } = auth();
   const user = await clerkClient.users.getUser(userId);
   if (!userId) {
-    return NextResponse.json({ status: 401, message: "Unauthorized" });
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   try {

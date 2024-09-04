@@ -9,9 +9,22 @@ export const fetchBusinessAPI = async (): Promise<Response> => {
   }
 };
 
+export const uploadBusinessImageAPI = async (formData: FormData) => {
+  try {
+    const response = await fetch("/api/image", {
+      method: "POST",
+      body: formData,
+    });
+
+    return response;
+  } catch (error) {
+    throw new Error(`Network Error Occurred`);
+  }
+};
+
 export const changeBusinessAPI = async (
   business: Business,
-): Promise<Business> => {
+): Promise<Response> => {
   try {
     const response = await fetch("/api/business/update", {
       method: "PUT",
@@ -22,11 +35,12 @@ export const changeBusinessAPI = async (
         business,
       }),
     });
+    return response;
 
-    const data = await response.json();
+    // const data = await response.json();
 
-    const { __v, ...filteredBusiness } = data.data;
-    return filteredBusiness;
+    // const { __v, ...filteredBusiness } = data.data;
+    // return filteredBusiness;
   } catch (e) {
     throw new Error(`Network Error Occurred`);
   }

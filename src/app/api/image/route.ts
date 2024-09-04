@@ -52,7 +52,7 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
   // export async function POST(req: NextRequest) {
   const { userId } = auth();
   if (!userId) {
-    return NextResponse.json({ status: 401, message: "Unauthorized" });
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   try {
@@ -75,7 +75,7 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       await deleteFileFromS3(oldFileUrl);
     }
 
-    return NextResponse.json({ success: true, fileUrl });
+    return NextResponse.json({ success: true, fileUrl }, { status: 200 });
   } catch (err: any) {
     console.error("Error uploading file:", err);
     return NextResponse.json(

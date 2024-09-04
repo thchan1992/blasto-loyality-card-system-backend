@@ -10,7 +10,6 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
   const { userId } = auth();
 
   if (!userId) {
-    console.log("401");
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 

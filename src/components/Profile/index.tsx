@@ -7,12 +7,14 @@ import { Business } from "@/lib/types/Business";
 import { Bubblegum_Sans } from "next/font/google";
 import React, { useEffect, useState } from "react";
 import { UploadForm } from "./S3UploadForm";
-
+import Modal from "../Modal";
 export const Profile = () => {
   const { handleApiErrors } = useHandleApiErrors();
 
   const [isLoading, setIsLoading] = useState(true);
 
+  const [warningMessage, setWarningMessage] = useState<string>("");
+  const [showWarning, setShowWarning] = useState<boolean>(false);
   const [totalStamps, setTotalStamps] = useState<number>(0);
 
   const [business, setBusiness] = useState<Business>({
@@ -32,16 +34,23 @@ export const Profile = () => {
   }, []);
 
   const handleChangeBusiness = async () => {
-    try {
-      const response = await changeBusinessAPI(business);
-      const isSuccess = await handleApiErrors(response);
-      if (!isSuccess) return;
-      const data = await response.json();
-      const { __v, ...filteredBusiness } = data.data;
-      setBusiness(filteredBusiness);
-    } catch (e) {
-      console.log(e.message);
+    // try {
+    if (business.name.length < 5) {
+      setWarningMessage("The business name must be longer than 5 characters.");
+      setShowWarning(true);
+      return;
     }
+    const response = await changeBusinessAPI(business);
+    const isSuccess = await handleApiErrors(response);
+    if (!isSuccess) return;
+    const data = await response.json();
+    const { __v, ...filteredBusiness } = data.data;
+    setBusiness(filteredBusiness);
+    setShowWarning(true);
+    setWarningMessage("Change completed.");
+    // } catch (e) {
+    //   console.log(e.message);
+    // }
   };
 
   const fetchBusiness = async () => {
@@ -98,6 +107,7 @@ export const Profile = () => {
               <img src={business.logo} alt="Logo" />
             </figure>
             <div className="card-body">
+              {business.email}
               <h2 className="card-title">Profile</h2>
               Total Stamps: {totalStamps}
               <p className="flex flex-col items-center justify-center border-2 p-1">
@@ -136,6 +146,13 @@ export const Profile = () => {
               </div>
             </div>
           </div>
+          <Modal
+            message={warningMessage}
+            visible={showWarning}
+            onConfirm={() => {
+              setShowWarning(false);
+            }}
+          />
         </div>
       )}
     </div>

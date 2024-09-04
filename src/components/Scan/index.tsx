@@ -6,7 +6,7 @@ import {
   giveStampAPI,
   handlePaymentAPI,
 } from "@/lib/api";
-
+import Modal from "../Modal";
 import React, { useEffect, useState } from "react";
 
 import { Scanner } from "@yudiel/react-qr-scanner";
@@ -16,10 +16,14 @@ export const Scan = () => {
   const [customerId, setCustomerId] = useState<string>("");
   const { handleApiErrors } = useHandleApiErrors();
   const [isScanAllowed, setIsScanAllowed] = useState<boolean>(false);
+  const [credit, setCredit] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const [showWarning, setShowWarning] = useState<boolean>(false);
   const [needMoreCredit, setNeedMoreCredit] = useState<boolean>(false);
   useEffect(() => {
     isSetupFinished();
+    setIsLoading(false);
   }, []);
 
   const handleDecode = (result) => {
@@ -36,8 +40,15 @@ export const Scan = () => {
 
   const onConfirm = async () => {
     const response = await giveStampAPI(customerId, 1);
+    if (response.status === 404) {
+      setShowWarning(true);
+      setCustomerId("");
+      return;
+    }
     const isSuccess = await handleApiErrors(response);
     if (!isSuccess) return;
+    const data = await response.json();
+    setCredit(data.newCredit);
   };
 
   const onRewardConfirm = async () => {
@@ -72,12 +83,14 @@ export const Scan = () => {
       res = false;
     }
     setNeedMoreCredit(res);
+    setCredit(data.data.credit);
   };
   return (
     <div className="flex items-center justify-center">
       <div className="flex h-1/2 w-full flex-col pl-2 pr-2">
+        credit: {credit < 10 ? "You are running out of credit" : credit}
         <button className="btn btn-primary" onClick={handlePayment}>
-          Pay More {needMoreCredit && <div>(You doNeed more credit)</div>}
+          Pay More {needMoreCredit && <div>(You Need more credit)</div>}
         </button>
         customer id: {customerId}
         {showCamera && (
@@ -106,9 +119,23 @@ export const Scan = () => {
               Give Reward
             </button>
           </>
-        ) : (
-          <div>Please add business name before giving away the reward. </div>
-        )}
+        ) : undefined}
+        <div>
+          {isScanAllowed && (
+            <div>
+              <div>Please add business name before giving away the reward.</div>
+            </div>
+          )}
+        </div>
+        <Modal
+          message={
+            "Customer ID not found. If the issue persists, please contact us for support."
+          }
+          visible={showWarning}
+          onConfirm={() => {
+            setShowWarning(false);
+          }}
+        />
       </div>
     </div>
   );

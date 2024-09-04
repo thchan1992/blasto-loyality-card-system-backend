@@ -113,6 +113,35 @@ export const handlePaymentAPI = async () => {
     //   console.error("Failed to create checkout session");
     // }
   } catch (error) {
-    console.error("Error:", error);
+    throw new Error(`Network Error Occurred`);
+  }
+};
+
+export const handleSupportAPI = async (
+  message: string,
+  name: string,
+  email: string,
+): Promise<Response> => {
+  try {
+    const response = await fetch("/api/support", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: message,
+        name: name,
+        email: email,
+      }),
+    });
+    // if (res.status === 200) {
+    //   setSent(true);
+    //   setName("");
+    //   setEmail("");
+    //   setMessage("");
+    // }
+    return response;
+  } catch (e) {
+    throw new Error(`Network Error Occurred`);
   }
 };

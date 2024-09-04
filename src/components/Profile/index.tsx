@@ -61,7 +61,6 @@ export const Profile = () => {
       };
       setBusiness(businessFetched);
       setTotalStamps(data.totalStamps);
-      console.log(businessFetched, "business Fetched");
     } catch (e) {
       console.log(e.message);
     }

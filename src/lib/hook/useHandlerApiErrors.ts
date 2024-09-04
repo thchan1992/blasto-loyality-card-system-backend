@@ -6,6 +6,7 @@ const useHandleApiErrors = () => {
   const { signOut } = useAuth();
 
   const handleApiErrors = async (response: Response) => {
+    console.log(response.ok, "response.ok");
     if (response.status === 401) {
       await signOut();
       router.push("/");
@@ -13,7 +14,8 @@ const useHandleApiErrors = () => {
     }
 
     if (!response.ok) {
-      router.push(`/error/${response.status}`);
+      router.push(`/error/`);
+      // router.push(`/error/${response.status}`);
       throw new Error(`Error: ${response.statusText}`);
     }
 

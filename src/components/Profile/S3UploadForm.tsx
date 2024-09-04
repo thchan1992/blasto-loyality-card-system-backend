@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
-
+import useHandleApiErrors from "@/lib/hook/useHandlerApiErrors";
+import { uploadBusinessImageAPI } from "@/lib/api";
 interface UploadFormProps {
   onFileUrlChange: (url: string) => void;
   oldFileUrl?: string;
@@ -10,7 +11,7 @@ export const UploadForm = ({
   onFileUrlChange,
   oldFileUrl,
 }: UploadFormProps) => {
-  console.log(oldFileUrl, "old File URL");
+  const { handleApiErrors } = useHandleApiErrors();
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -25,28 +26,18 @@ export const UploadForm = ({
     setUploading(true);
     const formData = new FormData();
     formData.append("file", file);
-    console.log(oldFileUrl, "old file url");
     if (oldFileUrl) {
       formData.append("oldFileUrl", oldFileUrl);
     }
-
-    console.log(formData, "Form Data");
-    try {
-      const response = await fetch("/api/image", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-      console.log(data.fileUrl);
-      onFileUrlChange(data.fileUrl);
-
-      setUploading(false);
-      setFile(null);
-    } catch (error) {
-      console.log(error);
+    const response = await uploadBusinessImageAPI(formData);
+    const isSuccess = await handleApiErrors(response);
+    if (!isSuccess) {
       setUploading(false);
     }
+    const data = await response.json();
+    onFileUrlChange(data.fileUrl);
+    setUploading(false);
+    setFile(null);
   };
 
   return (

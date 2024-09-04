@@ -33,8 +33,12 @@ export const Profile = () => {
 
   const handleChangeBusiness = async () => {
     try {
-      const res: Business = await changeBusinessAPI(business);
-      setBusiness(res);
+      const response = await changeBusinessAPI(business);
+      const isSuccess = await handleApiErrors(response);
+      if (!isSuccess) return;
+      const data = await response.json();
+      const { __v, ...filteredBusiness } = data.data;
+      setBusiness(filteredBusiness);
     } catch (e) {
       console.log(e.message);
     }

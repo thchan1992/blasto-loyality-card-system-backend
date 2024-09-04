@@ -20,7 +20,7 @@ const ForgotPasswordPage: NextPage = () => {
   if (!isLoaded) {
     return null;
   }
-
+  //example from clerk: https://clerk.com/docs/custom-flows/forgot-password
   // If the user is already signed in,
   // redirect them to the home page
   if (isSignedIn) {

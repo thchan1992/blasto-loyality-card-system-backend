@@ -1,56 +1,48 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { giveRewardAPI, giveStampAPI } from "@/lib/api";
+import { giveRewardAPI, giveStampAPI, handlePaymentAPI } from "@/lib/api";
 
 import React, { useState } from "react";
 
 import { Scanner } from "@yudiel/react-qr-scanner";
+import useHandleApiErrors from "@/lib/hook/useHandlerApiErrors";
 export const Scan = () => {
   const [showCamera, setShowCamera] = useState<boolean>(false);
   const [customerId, setCustomerId] = useState<string>("");
+  const { handleApiErrors } = useHandleApiErrors();
+
   const handleDecode = (result) => {
     if (result && result.length > 0) {
       const rawValue = result[0].rawValue;
-      console.log("QR Code Raw Value:", rawValue);
       setShowCamera(false);
       setCustomerId(rawValue);
     }
   };
 
   const handleError = (error) => {
-    console.error("QR Scanner Error:1", error);
+    console.error("QR Scanner Error:", error);
   };
 
   const onConfirm = async () => {
-    const res = await giveStampAPI(customerId, 1);
-    console.log(res);
+    const response = await giveStampAPI(customerId, 1);
+    const isSuccess = await handleApiErrors(response);
+    if (!isSuccess) return;
   };
 
   const onRewardConfirm = async () => {
-    const res = await giveRewardAPI(customerId);
-    console.log(res);
+    const response = await giveRewardAPI(customerId);
+    const isSuccess = await handleApiErrors(response);
+    if (!isSuccess) return;
   };
 
   const handlePayment = async () => {
-    try {
-      const response = await fetch("/api/payment/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        window.location.href = data.url;
-        // console.log(data, "payment successed");
-      } else {
-        console.error("Failed to create checkout session");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    const response = await handlePaymentAPI();
+    const isSuccess = await handleApiErrors(response);
+    if (!isSuccess) return;
+    const data = await response.json();
+    window.location.href = data.data;
   };
+
   return (
     <div className="flex items-center justify-center">
       <div className="flex h-1/2 w-full flex-col pl-2 pr-2">

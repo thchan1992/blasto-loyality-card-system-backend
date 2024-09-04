@@ -2,7 +2,7 @@ import { stripe } from "@/lib/stripe/stripe";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const { userId } = auth();
   const user = await clerkClient.users.getUser(userId);
   if (!userId) {
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       allow_promotion_codes: true,
     });
 
-    return new NextResponse(JSON.stringify({ url: stripeSession.url }));
+    return NextResponse.json({ data: stripeSession.url }, { status: 200 });
   } catch (e) {
     console.log(e, " payment error");
     return NextResponse.json({ message: e }, { status: 500 });

@@ -36,7 +36,7 @@ export const giveStampAPI = async (
   customerId: string,
   // businessId: string,
   stampNum: number,
-): Promise<Boolean> => {
+): Promise<Response> => {
   try {
     const response = await fetch("/api/stamp/give", {
       method: "POST",
@@ -50,15 +50,16 @@ export const giveStampAPI = async (
       }),
     });
 
-    if (response.status !== 200) {
-      return false;
-    }
-    return true;
+    // if (response.status !== 200) {
+    //   return false;
+    // }
+    // return true;
+    return response;
   } catch (e) {
     throw new Error(`Network Error Occurred`);
   }
 };
-export const giveRewardAPI = async (customerId: string): Promise<boolean> => {
+export const giveRewardAPI = async (customerId: string): Promise<Response> => {
   try {
     const response = await fetch("/api/stamp/redeem", {
       method: "POST",
@@ -69,13 +70,35 @@ export const giveRewardAPI = async (customerId: string): Promise<boolean> => {
         customerId,
       }),
     });
+    return response;
 
-    if (response.status !== 200) {
-      return false;
-    }
-    return true;
+    // if (response.status !== 200) {
+    //   return false;
+    // }
+    // return true;
   } catch (e) {
-    console.error("Network error:", e);
-    return false;
+    throw new Error(`Network Error Occurred`);
+  }
+};
+
+export const handlePaymentAPI = async () => {
+  try {
+    const response = await fetch("/api/payment/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response;
+    // if (response.ok) {
+    //   const data = await response.json();
+
+    //   return data;
+    // } else {
+    //   console.error("Failed to create checkout session");
+    // }
+  } catch (error) {
+    console.error("Error:", error);
   }
 };

@@ -14,7 +14,8 @@ const useHandleApiErrors = () => {
     }
 
     if (!response.ok) {
-      router.push(`/error/${response.status}`);
+      router.push(`/error/`);
+      // router.push(`/error/${response.status}`);
       throw new Error(`Error: ${response.statusText}`);
     }
 

@@ -6,3 +6,7 @@ export const businessUpdateSchema = z.object({
   loyaltyProgram: z.union([z.literal(5), z.literal(10)]),
   clerkUserId: z.string(),
 });
+
+export const formDataSchema = z.object({
+  oldFileUrl: z.string().optional(),
+});

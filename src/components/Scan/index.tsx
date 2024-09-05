@@ -20,6 +20,7 @@ export const Scan = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [showWarning, setShowWarning] = useState<boolean>(false);
+  const [warningMessage, setWarningMessage] = useState<string>("");
   const [needMoreCredit, setNeedMoreCredit] = useState<boolean>(false);
   useEffect(() => {
     isSetupFinished();
@@ -36,11 +37,18 @@ export const Scan = () => {
 
   const handleError = (error) => {
     console.error("QR Scanner Error:", error);
+    setWarningMessage(
+      "Scanner error, please try again later. If the issue persists, please contact us for support.",
+    );
+    setShowWarning(true);
   };
 
   const onConfirm = async () => {
     const response = await giveStampAPI(customerId, 1);
     if (response.status === 404) {
+      setWarningMessage(
+        "Customer ID not found. If the issue persists, please contact us for support.",
+      );
       setShowWarning(true);
       setCustomerId("");
       return;
@@ -49,12 +57,16 @@ export const Scan = () => {
     if (!isSuccess) return;
     const data = await response.json();
     setCredit(data.newCredit);
+    setWarningMessage("Stamp given.");
+    setShowWarning(true);
   };
 
   const onRewardConfirm = async () => {
     const response = await giveRewardAPI(customerId);
     const isSuccess = await handleApiErrors(response);
     if (!isSuccess) return;
+    setWarningMessage("Reward redeemed.");
+    setShowWarning(true);
   };
 
   const handlePayment = async () => {
@@ -110,6 +122,16 @@ export const Scan = () => {
             {showCamera ? "Close Camera" : "Open Camera"}
           </button>
         )}
+        {showCamera && (
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              setShowCamera(false);
+            }}
+          >
+            Close Camera
+          </button>
+        )}
         {customerId !== "" && isScanAllowed ? (
           <>
             <button className="btn btn-primary m-1" onClick={onConfirm}>
@@ -128,12 +150,11 @@ export const Scan = () => {
           )}
         </div>
         <Modal
-          message={
-            "Customer ID not found. If the issue persists, please contact us for support."
-          }
+          message={warningMessage}
           visible={showWarning}
           onConfirm={() => {
             setShowWarning(false);
+            setWarningMessage("");
           }}
         />
       </div>

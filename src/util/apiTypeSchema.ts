@@ -15,3 +15,5 @@ export const giveStampSchema = z.object({
   customerId: z.string(),
   stampNum: z.literal(1),
 });
+
+export const redeemRewardSchema = z.object({ customerId: z.string() });

@@ -63,6 +63,14 @@ export const Scan = () => {
 
   const onRewardConfirm = async () => {
     const response = await giveRewardAPI(customerId);
+    if (response.status === 404) {
+      setWarningMessage(
+        "Customer ID not found or Customer do not have any reward. If the issue persists, please contact us for support.",
+      );
+      setShowWarning(true);
+      setCustomerId("");
+      return;
+    }
     const isSuccess = await handleApiErrors(response);
     if (!isSuccess) return;
     setWarningMessage("Reward redeemed.");

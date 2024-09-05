@@ -2,6 +2,7 @@ import dbConnect from "@/lib/dbConnect";
 import Business from "@/lib/models/Business";
 import Customer from "@/lib/models/Customer";
 import rateLimitMiddleware from "@/lib/rateLimit";
+import { redeemRewardSchema } from "@/util/apiTypeSchema";
 import { auth } from "@clerk/nextjs/server";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
@@ -17,7 +18,17 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
   const session = await mongoose.startSession();
   try {
     const data = await req.json();
-    const { customerId } = data;
+
+    const validationResult = redeemRewardSchema.safeParse(data);
+
+    if (!validationResult.success) {
+      const validationErrors = validationResult.error.errors;
+      return NextResponse.json(
+        { message: "Invalid data from Z", errors: validationErrors },
+        { status: 400 },
+      );
+    }
+    const { customerId } = validationResult.data;
 
     if (!customerId) {
       return NextResponse.json(
@@ -65,7 +76,7 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
         { status: 404 },
       );
     }
-
+    console.log("xx");
     existingStamp.count -= business.loyaltyProgram;
 
     await customer.save({ session });

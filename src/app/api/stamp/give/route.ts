@@ -19,23 +19,18 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
 
   try {
     const data = await req.json();
-    const { customerId, stampNum } = data;
-
-    console.log(customerId, stampNum, "stamp Num");
-    console.log(typeof stampNum);
-    console.log(typeof customerId);
+    // const { customerId, stampNum } = data;
 
     const validationResult = giveStampSchema.safeParse(data);
 
     if (!validationResult.success) {
       const validationErrors = validationResult.error.errors;
-      console.log(validationResult, "validationResult");
       return NextResponse.json(
         { message: "Invalid data from Z", errors: validationErrors },
         { status: 400 },
       );
     }
-    // const { customerId, stampNum } = validationResult.data;
+    const { customerId, stampNum } = validationResult.data;
 
     session.startTransaction();
 

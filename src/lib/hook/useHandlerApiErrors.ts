@@ -13,6 +13,8 @@ const useHandleApiErrors = () => {
       return false;
     }
 
+    console.log(response, "respo");
+
     if (!response.ok) {
       router.push(`/error/`);
       // router.push(`/error/${response.status}`);

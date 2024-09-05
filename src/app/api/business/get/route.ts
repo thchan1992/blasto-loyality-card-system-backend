@@ -16,8 +16,6 @@ export const GET = rateLimitMiddleware(async (req: NextRequest) => {
     await dbConnect();
 
     const business = await Business.findOne({ clerkUserId: userId });
-    console.log(userId, "userId from clerk");
-    console.log(business.clerkUserId, "clerkUserID from mongo");
     if (business.clerkUserId !== userId) {
       return NextResponse.json(
         { message: "You do not have the access." },

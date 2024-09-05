@@ -6,6 +6,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { auth } from "@clerk/nextjs/server";
 import rateLimitMiddleware from "@/lib/rateLimit";
+import { allowedFileTypes, fileSizeLimit } from "@/util/imageRestriction";
 
 const s3Client = new S3Client({
   region: process.env.NEXT_PUBLIC_AWS_S3_REGION,
@@ -67,6 +68,20 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       );
     }
 
+    if (file.size > fileSizeLimit) {
+      return NextResponse.json(
+        { error: "File size exceeds the 5 MB limit." },
+        { status: 400 },
+      );
+    }
+
+    if (!allowedFileTypes.includes(file.type)) {
+      return NextResponse.json(
+        { error: "Invalid file type. Only JPG and PNG are allowed." },
+        { status: 400 },
+      );
+    }
+
     const buffer = Buffer.from(await file.arrayBuffer());
     const fileName = `${Date.now()}-${file.name}`;
     const fileUrl = await uploadFileToS3(buffer, fileName, file.type);
@@ -83,4 +98,4 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       { status: 500 },
     );
   }
-}, 2);
+}, 5);

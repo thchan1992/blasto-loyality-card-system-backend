@@ -1,8 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { giveRewardAPI, giveStampAPI, handlePaymentAPI } from "@/lib/api";
-
-import React, { useState } from "react";
+import {
+  fetchBusinessAPI,
+  giveRewardAPI,
+  giveStampAPI,
+  handlePaymentAPI,
+} from "@/lib/api";
+import Modal from "../Modal";
+import React, { useEffect, useState } from "react";
 
 import { Scanner } from "@yudiel/react-qr-scanner";
 import useHandleApiErrors from "@/lib/hook/useHandlerApiErrors";
@@ -10,6 +15,17 @@ export const Scan = () => {
   const [showCamera, setShowCamera] = useState<boolean>(false);
   const [customerId, setCustomerId] = useState<string>("");
   const { handleApiErrors } = useHandleApiErrors();
+  const [isScanAllowed, setIsScanAllowed] = useState<boolean>(false);
+  const [credit, setCredit] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const [showWarning, setShowWarning] = useState<boolean>(false);
+  const [warningMessage, setWarningMessage] = useState<string>("");
+  const [needMoreCredit, setNeedMoreCredit] = useState<boolean>(false);
+  useEffect(() => {
+    isSetupFinished();
+    setIsLoading(false);
+  }, []);
 
   const handleDecode = (result) => {
     if (result && result.length > 0) {
@@ -21,18 +37,36 @@ export const Scan = () => {
 
   const handleError = (error) => {
     console.error("QR Scanner Error:", error);
+    setWarningMessage(
+      "Scanner error, please try again later. If the issue persists, please contact us for support.",
+    );
+    setShowWarning(true);
   };
 
   const onConfirm = async () => {
     const response = await giveStampAPI(customerId, 1);
+    if (response.status === 404) {
+      setWarningMessage(
+        "Customer ID not found. If the issue persists, please contact us for support.",
+      );
+      setShowWarning(true);
+      setCustomerId("");
+      return;
+    }
     const isSuccess = await handleApiErrors(response);
     if (!isSuccess) return;
+    const data = await response.json();
+    setCredit(data.newCredit);
+    setWarningMessage("Stamp given.");
+    setShowWarning(true);
   };
 
   const onRewardConfirm = async () => {
     const response = await giveRewardAPI(customerId);
     const isSuccess = await handleApiErrors(response);
     if (!isSuccess) return;
+    setWarningMessage("Reward redeemed.");
+    setShowWarning(true);
   };
 
   const handlePayment = async () => {
@@ -43,11 +77,32 @@ export const Scan = () => {
     window.location.href = data.data;
   };
 
+  const isSetupFinished = async (): Promise<boolean> => {
+    const response = await fetchBusinessAPI();
+    const isSuccess = await handleApiErrors(response);
+    if (!isSuccess) return;
+    const data = await response.json();
+    let res: boolean;
+    if (data.data.name === "") {
+      res = false;
+    } else {
+      res = true;
+    }
+    setIsScanAllowed(res);
+    if (data.data.credit <= 0) {
+      res = true;
+    } else {
+      res = false;
+    }
+    setNeedMoreCredit(res);
+    setCredit(data.data.credit);
+  };
   return (
     <div className="flex items-center justify-center">
       <div className="flex h-1/2 w-full flex-col pl-2 pr-2">
+        credit: {credit < 10 ? "You are running out of credit" : credit}
         <button className="btn btn-primary" onClick={handlePayment}>
-          Pay More
+          Pay More {needMoreCredit && <div>(You Need more credit)</div>}
         </button>
         customer id: {customerId}
         {showCamera && (
@@ -57,15 +112,27 @@ export const Scan = () => {
             onError={handleError}
           />
         )}
-        <button
-          className="btn btn-primary m-1"
-          onClick={() => {
-            showCamera ? setShowCamera(false) : setShowCamera(true);
-          }}
-        >
-          {showCamera ? "Close Camera" : "Open Camera"}
-        </button>
-        {customerId !== "" && (
+        {isScanAllowed && (
+          <button
+            className="btn btn-primary m-1"
+            onClick={() => {
+              showCamera ? setShowCamera(false) : setShowCamera(true);
+            }}
+          >
+            {showCamera ? "Close Camera" : "Open Camera"}
+          </button>
+        )}
+        {showCamera && (
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              setShowCamera(false);
+            }}
+          >
+            Close Camera
+          </button>
+        )}
+        {customerId !== "" && isScanAllowed ? (
           <>
             <button className="btn btn-primary m-1" onClick={onConfirm}>
               Give Stamp
@@ -74,7 +141,22 @@ export const Scan = () => {
               Give Reward
             </button>
           </>
-        )}
+        ) : undefined}
+        <div>
+          {isScanAllowed && (
+            <div>
+              <div>Please add business name before giving away the reward.</div>
+            </div>
+          )}
+        </div>
+        <Modal
+          message={warningMessage}
+          visible={showWarning}
+          onConfirm={() => {
+            setShowWarning(false);
+            setWarningMessage("");
+          }}
+        />
       </div>
     </div>
   );

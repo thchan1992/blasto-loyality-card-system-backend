@@ -93,7 +93,7 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     session.endSession();
 
     return NextResponse.json(
-      { data: "A new stamp has been given." },
+      { data: "A new stamp has been given.", newCredit: business.credit },
       { status: 200 },
     );
   } catch (e) {

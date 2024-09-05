@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import useHandleApiErrors from "@/lib/hook/useHandlerApiErrors";
 import { uploadBusinessImageAPI } from "@/lib/api";
 import Modal from "../Modal";
+import { allowedFileTypes, fileSizeLimit } from "@/util/imageRestriction";
 interface UploadFormProps {
   onFileUrlChange: (url: string) => void;
   oldFileUrl?: string;
@@ -20,20 +21,19 @@ export const UploadForm = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const fileSizeLimit = 5 * 1024 * 1024;
+      // const fileSizeLimit = 5 * 1024 * 1024;
       const selectedFile = e.target.files[0];
-      if (selectedFile.size > fileSizeLimit) {
-        setWarningMessage("File size should not exceed 5 MB.");
-        setShowWarning(true);
-        return;
-      }
+      // if (selectedFile.size > fileSizeLimit) {
+      //   setWarningMessage("File size should not exceed 5 MB.");
+      //   setShowWarning(true);
+      //   return;
+      // }
 
-      const allowedFileTypes = ["image/jpeg", "image/png"];
-      if (!allowedFileTypes.includes(selectedFile.type)) {
-        setWarningMessage("Only JPG or PNG formats are allowed.");
-        setShowWarning(true);
-        return;
-      }
+      // if (!allowedFileTypes.includes(selectedFile.type)) {
+      //   setWarningMessage("Only JPG or PNG formats are allowed.");
+      //   setShowWarning(true);
+      //   return;
+      // }
 
       setFile(e.target.files[0]);
     }

@@ -10,3 +10,8 @@ export const businessUpdateSchema = z.object({
 export const formDataSchema = z.object({
   oldFileUrl: z.string().optional(),
 });
+
+export const giveStampSchema = z.object({
+  customerId: z.string(),
+  stampNum: z.literal(1),
+});

@@ -50,6 +50,7 @@ const Contact = () => {
                       Your Name
                     </label>
                     <input
+                      maxLength={100}
                       type="text"
                       placeholder="Enter your name"
                       className="dark:bg-primaryColor w-full rounded-md border border-transparent px-6 py-3 text-base text-body-color placeholder-body-color shadow-one outline-none focus:border-primary focus-visible:shadow-none dark:shadow-signUp"
@@ -68,6 +69,7 @@ const Contact = () => {
                       Your Email
                     </label>
                     <input
+                      maxLength={100}
                       onChange={(e) => {
                         setEmail(e.target.value);
                       }}
@@ -86,6 +88,7 @@ const Contact = () => {
                       Your Message
                     </label>
                     <textarea
+                      maxLength={500}
                       onChange={(e) => {
                         setMessage(e.target.value);
                       }}

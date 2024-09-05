@@ -1,6 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
 import Business from "@/lib/models/Business";
 import rateLimitMiddleware from "@/lib/rateLimit";
+import { businessUpdateSchema } from "@/util/apiTypeSchema";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -11,14 +12,18 @@ export const PUT = rateLimitMiddleware(async (req: NextRequest) => {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const data = await req.json();
-    const { name, logo, loyaltyProgram, clerkUserId } = data.business;
 
-    if (!clerkUserId || !loyaltyProgram || !logo || !name) {
+    const validationResult = businessUpdateSchema.safeParse(data.business);
+
+    if (!validationResult.success) {
+      const validationErrors = validationResult.error.errors;
       return NextResponse.json(
-        { message: "Missing field required" },
-        { status: 404 },
+        { message: "Invalid data from Z", errors: validationErrors },
+        { status: 400 },
       );
     }
+
+    const { name, logo, loyaltyProgram, clerkUserId } = validationResult.data;
 
     await dbConnect();
     const updatedBusiness = await Business.findOneAndUpdate(

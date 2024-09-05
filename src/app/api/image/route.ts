@@ -7,6 +7,7 @@ import {
 import { auth } from "@clerk/nextjs/server";
 import rateLimitMiddleware from "@/lib/rateLimit";
 import { allowedFileTypes, fileSizeLimit } from "@/util/imageRestriction";
+import { formDataSchema } from "@/util/apiTypeSchema";
 
 const s3Client = new S3Client({
   region: process.env.NEXT_PUBLIC_AWS_S3_REGION,
@@ -58,6 +59,15 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
 
   try {
     const formData = await req.formData();
+
+    const parsedData = formDataSchema.safeParse({
+      oldFileUrl: formData.get("oldFileUrl"),
+    });
+
+    if (!parsedData.success) {
+      return NextResponse.json({ error: "Type not valid" }, { status: 400 });
+    }
+
     const file = formData.get("file");
     const oldFileUrl = formData.get("oldFileUrl");
 

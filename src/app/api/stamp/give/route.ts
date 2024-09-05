@@ -2,6 +2,7 @@ import dbConnect from "@/lib/dbConnect";
 import Business from "@/lib/models/Business";
 import Customer, { IStamp } from "@/lib/models/Customer";
 import rateLimitMiddleware from "@/lib/rateLimit";
+import { giveStampSchema } from "@/util/apiTypeSchema";
 import { auth } from "@clerk/nextjs/server";
 import mongoose, { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
@@ -18,14 +19,18 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
 
   try {
     const data = await req.json();
-    const { customerId, stampNum } = data;
+    // const { customerId, stampNum } = data;
 
-    if (!customerId || !stampNum) {
+    const validationResult = giveStampSchema.safeParse(data);
+
+    if (!validationResult.success) {
+      const validationErrors = validationResult.error.errors;
       return NextResponse.json(
-        { message: "Missing field required" },
-        { status: 404 },
+        { message: "Invalid data from Z", errors: validationErrors },
+        { status: 400 },
       );
     }
+    const { customerId, stampNum } = validationResult.data;
 
     session.startTransaction();
 

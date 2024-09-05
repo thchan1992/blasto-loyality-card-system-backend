@@ -17,3 +17,19 @@ export const giveStampSchema = z.object({
 });
 
 export const redeemRewardSchema = z.object({ customerId: z.string() });
+
+export const supportEmailSchema = z.object({
+  message: z
+    .string()
+    .min(1, "Message is required")
+    .max(500, "Message must be 500 characters or less"),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(100, "Name must be 100 characters or less"),
+  email: z
+    .string()
+    .email("Invalid email address")
+    .min(1, "Email is required")
+    .max(100, "Email must be 100 characters or less"),
+});

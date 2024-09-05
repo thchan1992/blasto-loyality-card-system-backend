@@ -2,11 +2,23 @@ import { NextResponse, NextRequest } from "next/server";
 
 import { client } from "@/util/postmark";
 import rateLimitMiddleware from "@/lib/rateLimit";
+import { supportEmailSchema } from "@/util/apiTypeSchema";
 
 export const POST = rateLimitMiddleware(async (req: NextRequest) => {
   try {
-    const res = await req.json();
-    const { message, name, email } = res;
+    const data = await req.json();
+    // const { message, name, email } = data;
+    const validationResult = supportEmailSchema.safeParse(data);
+
+    if (!validationResult.success) {
+      const validationErrors = validationResult.error.errors;
+      return NextResponse.json(
+        { message: "Invalid data from Z", errors: validationErrors },
+        { status: 400 },
+      );
+    }
+    const { message, name, email } = validationResult.data;
+
     await client.sendEmail({
       From: process.env.SUPPORT_EMAIL,
       To: process.env.SUPPORT_EMAIL,
@@ -20,4 +32,4 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       { status: 500 },
     );
   }
-}, 1);
+}, 10);

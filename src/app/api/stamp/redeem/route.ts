@@ -48,8 +48,8 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       await session.abortTransaction();
       session.endSession();
       return NextResponse.json(
-        { message: "Business not found" },
-        { status: 404 },
+        { message: "Business not found. Signing user out." },
+        { status: 401 },
       );
     }
 

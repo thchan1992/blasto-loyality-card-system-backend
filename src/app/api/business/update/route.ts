@@ -8,12 +8,15 @@ import { NextRequest, NextResponse } from "next/server";
 export const PUT = rateLimitMiddleware(async (req: NextRequest) => {
   try {
     const { userId } = auth();
+
     if (!userId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
-    const data = await req.json();
+    const request = await req.json();
+    const data = request.business;
+    // console.log(data);
 
-    const validationResult = businessUpdateSchema.safeParse(data.business);
+    const validationResult = businessUpdateSchema.safeParse(data);
 
     if (!validationResult.success) {
       const validationErrors = validationResult.error.errors;
@@ -34,8 +37,8 @@ export const PUT = rateLimitMiddleware(async (req: NextRequest) => {
 
     if (!updatedBusiness) {
       return NextResponse.json(
-        { message: "Business not found" },
-        { status: 404 },
+        { message: "Business not found. Signing user out." },
+        { status: 401 },
       );
     }
     return NextResponse.json({ data: updatedBusiness }, { status: 200 });

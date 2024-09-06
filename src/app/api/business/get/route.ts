@@ -11,18 +11,26 @@ export const GET = rateLimitMiddleware(async (req: NextRequest) => {
     if (!userId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
-    // const clerkUserId = params.id;
 
     await dbConnect();
 
     const business = await Business.findOne({ clerkUserId: userId });
-    if (business.clerkUserId !== userId) {
+    if (business === null) {
       return NextResponse.json(
-        { message: "You do not have the access." },
+        {
+          message: "Client do not have a business account. Signing client out.",
+        },
         { status: 401 },
       );
     }
 
+    //safety check with the clerkId in database
+    if (business.clerkUserId !== userId) {
+      return NextResponse.json(
+        { message: "You do not have the access." },
+        { status: 404 },
+      );
+    }
     const totalStamps = await getTotalStampsForBusiness(business._id);
 
     return NextResponse.json(

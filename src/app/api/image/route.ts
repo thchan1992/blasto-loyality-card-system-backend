@@ -8,6 +8,7 @@ import { auth } from "@clerk/nextjs/server";
 import rateLimitMiddleware from "@/lib/rateLimit";
 import { allowedFileTypes, fileSizeLimit } from "@/util/imageRestriction";
 import { formDataSchema } from "@/util/apiTypeSchema";
+import Business from "@/lib/models/Business";
 
 const s3Client = new S3Client({
   region: process.env.NEXT_PUBLIC_AWS_S3_REGION,
@@ -55,6 +56,18 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
   const { userId } = auth();
   if (!userId) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  //check if the client is business account.
+  const business = await Business.findOne({
+    clerkUserId: userId,
+  });
+
+  if (!business) {
+    return NextResponse.json(
+      { message: "Business not found. Signing user out." },
+      { status: 401 },
+    );
   }
 
   try {

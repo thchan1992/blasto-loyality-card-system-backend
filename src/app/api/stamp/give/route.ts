@@ -9,8 +9,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const POST = rateLimitMiddleware(async (req: NextRequest) => {
   const { userId } = auth();
-
   if (!userId) {
+    console.log(userId);
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -45,8 +45,8 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       await session.abortTransaction();
       session.endSession();
       return NextResponse.json(
-        { message: "Business not found" },
-        { status: 404 },
+        { message: "Business not found. Signing user out." },
+        { status: 401 },
       );
     }
 
@@ -112,4 +112,4 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       { status: 500 },
     );
   }
-});
+}, 100);

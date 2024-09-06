@@ -16,6 +16,14 @@ export const GET = rateLimitMiddleware(async (req: NextRequest) => {
     const business = await Business.findOne({
       clerkUserId: userId,
     });
+
+    if (!business) {
+      return NextResponse.json(
+        { message: "Business not found. Signing user out." },
+        { status: 401 },
+      );
+    }
+
     const totalStamps = await getTotalStampsForBusiness(business._id);
     return NextResponse.json({ data: totalStamps }, { status: 200 });
   } catch (e) {

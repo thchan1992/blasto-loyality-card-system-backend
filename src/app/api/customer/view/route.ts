@@ -17,7 +17,7 @@ export const GET = rateLimitMiddleware(async (req: NextRequest) => {
     const customer = await CustomerModel.findOne({ clerkUserId: userId })
       .populate({
         path: "stamps.businessId", //  populate
-        select: "name loyaltyProgram", // select the name field from business
+        select: "name loyaltyProgram logo", // select the name field from business
       })
       .exec();
 

@@ -162,21 +162,40 @@ const Header = () => {
                         <li className="group relative">
                           <Link
                             href={"/profile"}
-                            className={`dark:text-thirdColor flex py-2 text-base text-dark group-hover:opacity-70 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6`}
+                            className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
                           >
-                            Profile
+                            Dashboard
                           </Link>
                         </li>
                         <li className="group relative">
                           <Link
                             href={"/scan"}
-                            className={`dark:text-thirdColor flex py-2 text-base text-dark group-hover:opacity-70 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6`}
+                            className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
                           >
                             Scan
                           </Link>
                         </li>
                       </>
-                    ) : undefined}
+                    ) : (
+                      <>
+                        <li className="group relative">
+                          <Link
+                            href="/signin"
+                            className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
+                          >
+                            Sign in
+                          </Link>
+                        </li>
+                        <li className="group relative">
+                          <Link
+                            href={"/signup"}
+                            className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
+                          >
+                            Sign up
+                          </Link>
+                        </li>
+                      </>
+                    )}
                   </ul>
                 </nav>
               </div>

@@ -14,6 +14,7 @@ import { UploadForm } from "./S3UploadForm";
 import Modal from "../Modal";
 import { Stats } from "./Stats";
 import StampSelector from "./StampSelector";
+import { CreditIndicator } from "./CreditIndicator";
 export const Profile = () => {
   const { handleApiErrors } = useHandleApiErrors();
 
@@ -141,7 +142,7 @@ export const Profile = () => {
                         },
                       ]}
                     />
-                    <div className="stats bg-primary text-primary-content">
+                    {/* <div className="stats bg-primary text-primary-content">
                       <div className="stat">
                         <div className="stat-title">Account balance</div>
                         <div className="stat-value">
@@ -156,7 +157,12 @@ export const Profile = () => {
                           </button>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
+
+                    <CreditIndicator
+                      credit={business.credit}
+                      handlePayment={handlePayment}
+                    />
 
                     <div className="glass rounded-box ">
                       <p className="flex flex-col justify-center p-1 ">

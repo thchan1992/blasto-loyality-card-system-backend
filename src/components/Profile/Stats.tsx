@@ -6,7 +6,7 @@ export const Stats = ({
   data: { title: string; value: string | number; desc: string }[];
 }) => {
   return (
-    <div className="stats border-2 border-white shadow">
+    <div className="stats border-2 border-slate-700 shadow">
       {data.map((item, i) => {
         return (
           <div className="stat" key={i}>

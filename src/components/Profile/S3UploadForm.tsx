@@ -58,28 +58,33 @@ export const UploadForm = ({
   };
 
   return (
-    <div className="full-w flex flex-row items-center justify-center p-3">
-      <input
-        type="file"
-        className="file-input file-input-bordered w-full max-w-xs"
-        onChange={handleFileChange}
-      />
-      <button
-        type="button"
-        className="btn btn-primary ml-2"
-        onClick={handleUpload}
-        disabled={uploading}
-      >
-        {uploading ? "Uploading..." : "Upload"}
-      </button>
-      <Modal
-        message={warningMessage}
-        visible={showWarning}
-        onConfirm={() => {
-          setShowWarning(false);
-          setWarningMessage("");
-        }}
-      />
-    </div>
+    <>
+      <h2 className="mb-4 items-center pl-3 pt-3 text-2xl font-bold">
+        Change Your Business Logo
+      </h2>
+      <div className="full-w flex flex-row items-center justify-center p-3">
+        <input
+          type="file"
+          className="file-input file-input-bordered w-full"
+          onChange={handleFileChange}
+        />
+        <button
+          type="button"
+          className="btn btn-primary ml-2"
+          onClick={handleUpload}
+          disabled={uploading}
+        >
+          {uploading ? "Uploading..." : "Upload"}
+        </button>
+        <Modal
+          message={warningMessage}
+          visible={showWarning}
+          onConfirm={() => {
+            setShowWarning(false);
+            setWarningMessage("");
+          }}
+        />
+      </div>
+    </>
   );
 };

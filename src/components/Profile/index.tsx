@@ -1,6 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { changeBusinessAPI, fetchBusinessAPI } from "@/lib/api";
+import {
+  changeBusinessAPI,
+  fetchBusinessAPI,
+  handlePaymentAPI,
+} from "@/lib/api";
 import useHandleApiErrors from "@/lib/hook/useHandlerApiErrors";
 import { IBusiness } from "@/lib/models/Business";
 import { Business } from "@/lib/types/Business";
@@ -9,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { UploadForm } from "./S3UploadForm";
 import Modal from "../Modal";
 import { Stats } from "./Stats";
+import StampSelector from "./StampSelector";
 export const Profile = () => {
   const { handleApiErrors } = useHandleApiErrors();
 
@@ -84,10 +89,10 @@ export const Profile = () => {
     }));
   };
 
-  const handleLoyaltyProgramChange = () => {
+  const handleLoyaltyProgramChange = (newValue) => {
     setBusiness((prevBusiness) => ({
       ...prevBusiness,
-      loyaltyProgram: prevBusiness.loyaltyProgram === 5 ? 10 : 5,
+      loyaltyProgram: (prevBusiness.loyaltyProgram = newValue),
     }));
   };
 
@@ -97,6 +102,14 @@ export const Profile = () => {
       ...prevBusiness,
       logo: updatedLogo,
     }));
+  };
+
+  const handlePayment = async () => {
+    const response = await handlePaymentAPI();
+    const isSuccess = await handleApiErrors(response);
+    if (!isSuccess) return;
+    const data = await response.json();
+    window.location.href = data.data;
   };
 
   return (
@@ -128,33 +141,54 @@ export const Profile = () => {
                         },
                       ]}
                     />
+                    <div className="stats bg-primary text-primary-content">
+                      <div className="stat">
+                        <div className="stat-title">Account balance</div>
+                        <div className="stat-value">
+                          {business.credit} Stamp(s)
+                        </div>
+                        <div className="stat-actions">
+                          <button
+                            className="btn btn-success btn-sm"
+                            onClick={handlePayment}
+                          >
+                            Add credits
+                          </button>
+                        </div>
+                      </div>
+                    </div>
 
                     <div className="glass rounded-box ">
                       <p className="flex flex-col justify-center p-1 ">
-                        <p className="pl-10 pt-2">Change your business logo</p>
                         <UploadForm
                           onFileUrlChange={handleLogoChange}
                           oldFileUrl={business.logo}
                         />
-                        <input
-                          value={business.name}
-                          type="text"
-                          placeholder="Business name"
-                          className="input input-bordered  w-full"
-                          onChange={handleNameChange}
-                        />
-                        <label className="swap swap-flip pt-2 text-9xl">
-                          {/* Bind checkbox checked state to the loyalty program value */}
+                        <div className="p-3">
+                          <h2 className="mb-4 items-center text-2xl font-bold">
+                            Change Your Business Name
+                          </h2>
+                          <input
+                            value={business.name}
+                            type="text"
+                            placeholder="Business name"
+                            className="input input-bordered  w-full"
+                            onChange={handleNameChange}
+                          />
+                        </div>
+                        {/* <label className="swap swap-flip pt-2 text-9xl">
                           <input
                             type="checkbox"
                             checked={business.loyaltyProgram !== 5}
-                            // onChange={handleLoyaltyProgramChange}
                             onChange={handleLoyaltyProgramChange}
                           />
-                          {/* Display "10" when checkbox is checked, "5" when unchecked */}
                           <div className="swap-on">🔟</div>
                           <div className="swap-off">5️⃣</div>
-                        </label>
+                        </label> */}
+                        <StampSelector
+                          initialValue={business.loyaltyProgram}
+                          onChange={handleLoyaltyProgramChange}
+                        />
                       </p>
                     </div>
                     <div className="card-actions justify-end">

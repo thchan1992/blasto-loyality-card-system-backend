@@ -22,6 +22,8 @@ const Pricing = () => {
             price={"0"}
             duration={"100 Stamps"}
             subtitle="First 100 stamps are free."
+            title={"Get Started"}
+            href={"/signup"}
           >
             <OfferList
               text="Experience our product with no cost"
@@ -38,6 +40,8 @@ const Pricing = () => {
             price={"5"}
             duration={"500 Stamps"}
             subtitle="Cheap and affordable"
+            title={"Get Started"}
+            href={"/signup"}
           >
             <OfferList text="No Commitment" status="active" />
             <OfferList text="1p per stamp" status="active" />
@@ -47,6 +51,8 @@ const Pricing = () => {
             price={"50"}
             duration={"Unlimited"}
             subtitle="Good for Heavy Users"
+            title={"Contact Us"}
+            href={"/#contact"}
           >
             <OfferList text="Give as many stamps as you can" status="active" />
             <OfferList text="Get Priority Support" status="active" />

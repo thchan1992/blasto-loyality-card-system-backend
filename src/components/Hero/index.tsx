@@ -19,17 +19,22 @@ const Hero = () => {
           <div className="hero-overlay bg-opacity-60"></div>
           <div className="hero-content text-center text-neutral-content">
             <div className="max-w-md">
-              <h1 className="mb-5 text-5xl font-bold">
-                {" "}
-                Blasta - Lightweight Digital Stamp System
-              </h1>
+              <h1 className="mb-5 text-5xl font-bold"> Blasta</h1>
+              <h2 className="font-bold">Digital Stamp System</h2>
               <p className="mb-5">
-                Get started in minutes with our simple, no-fuss digital stamp
-                system. Scan customer QR codes directly from our website, reward
-                them instantly, and boost loyalty with minimal effort. No
-                complex integration—just an easy, streamlined solution!
+                Get started in minutes—all you need is just a smartphone or
+                tablet. There's no need to install any app. It’s a hassle-free,
+                lightweight solution designed to boost customer loyalty with
+                ease. Plus, with our "pay-as-you-go" model, you only pay when
+                you use it—no commitment, no fees when you don’t use the
+                service!
               </p>
-              <button className="btn btn-primary">Get Started</button>
+              <Link
+                href="/signup"
+                className=" ease-in-up bg-sixthColor hidden rounded-md px-8 py-3 text-base font-bold text-white transition duration-300 hover:bg-opacity-90 hover:shadow-signUp md:block md:px-9 lg:px-6 xl:px-9"
+              >
+                <button className="btn btn-primary ">Get Started</button>
+              </Link>
             </div>
           </div>
         </div>

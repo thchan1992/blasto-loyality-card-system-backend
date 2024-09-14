@@ -186,7 +186,7 @@ const Header = () => {
                   </ul>
                 </nav>
               </div>
-              <div className="flex items-center justify-end pr-16 lg:pr-0">
+              <div className="flex items-center justify-end pr-16 sm:pr-0 lg:pr-0">
                 {!isSignedIn ? (
                   <>
                     <Link

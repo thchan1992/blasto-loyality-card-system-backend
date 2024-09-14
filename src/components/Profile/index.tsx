@@ -6,23 +6,26 @@ import {
   handlePaymentAPI,
 } from "@/lib/api";
 import useHandleApiErrors from "@/lib/hook/useHandlerApiErrors";
-import { IBusiness } from "@/lib/models/Business";
 import { Business } from "@/lib/types/Business";
-import { Bubblegum_Sans } from "next/font/google";
 import React, { useEffect, useState } from "react";
 import { UploadForm } from "./S3UploadForm";
 import Modal from "../Modal";
 import { Stats } from "./Stats";
 import StampSelector from "./StampSelector";
 import { CreditIndicator } from "./CreditIndicator";
+import { useUtility } from "@/lib/hook/useUtility";
+
 export const Profile = () => {
   const { handleApiErrors } = useHandleApiErrors();
-
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [warningMessage, setWarningMessage] = useState<string>("");
-  const [showWarning, setShowWarning] = useState<boolean>(false);
   const [totalStamps, setTotalStamps] = useState<number>(0);
+  const {
+    isLoading,
+    setIsLoading,
+    warningMessage,
+    setWarningMessage,
+    showWarning,
+    setShowWarning,
+  } = useUtility();
 
   const [business, setBusiness] = useState<Business>({
     clerkUserId: "",
@@ -55,9 +58,6 @@ export const Profile = () => {
     setBusiness(filteredBusiness);
     setShowWarning(true);
     setWarningMessage("Change completed.");
-    // } catch (e) {
-    //   console.log(e.message);
-    // }
   };
 
   const fetchBusiness = async () => {

@@ -13,40 +13,37 @@ import { Scanner } from "@yudiel/react-qr-scanner";
 import useHandleApiErrors from "@/lib/hook/useHandlerApiErrors";
 import Image from "next/image";
 import { CreditIndicator } from "../Profile/CreditIndicator";
-import { useIsLoading } from "@/lib/hook/useIsLoading";
+import { useUtility } from "@/lib/hook/useUtility";
+import { useScanner } from "@/lib/hook/useScanner";
 export const Scan = () => {
-  const [showCamera, setShowCamera] = useState<boolean>(false);
-  const [customerId, setCustomerId] = useState<string>("");
   const { handleApiErrors } = useHandleApiErrors();
-  const [isScanAllowed, setIsScanAllowed] = useState<boolean>(true);
   const [credit, setCredit] = useState<number>(0);
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { isLoading, setIsLoading } = useIsLoading();
 
-  const [showWarning, setShowWarning] = useState<boolean>(false);
-  const [warningMessage, setWarningMessage] = useState<string>("");
+  const {
+    showCamera,
+    setShowCamera,
+    isScanAllowed,
+    setIsScanAllowed,
+    customerId,
+    setCustomerId,
+    handleDecode,
+    handleError,
+  } = useScanner();
+
+  const {
+    isLoading,
+    setIsLoading,
+    warningMessage,
+    setWarningMessage,
+    showWarning,
+    setShowWarning,
+  } = useUtility();
 
   useEffect(() => {
     isSetupFinished();
     setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleDecode = (result) => {
-    if (result && result.length > 0) {
-      const rawValue = result[0].rawValue;
-      setShowCamera(false);
-      setCustomerId(rawValue);
-    }
-  };
-
-  const handleError = (error) => {
-    console.error("QR Scanner Error:", error);
-    setWarningMessage(
-      "Scanner error, please try again later. If the issue persists, please contact us for support.",
-    );
-    setShowWarning(true);
-  };
 
   const onConfirm = async () => {
     setIsLoading(true);

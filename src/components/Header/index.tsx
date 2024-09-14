@@ -58,20 +58,7 @@ const Header = () => {
                   sticky ? "py-5 lg:py-2" : "py-8"
                 } `}
               >
-                <Image
-                  src="/images/logo/logo-2.svg"
-                  alt="logo"
-                  width={140}
-                  height={30}
-                  className="w-full dark:hidden"
-                />
-                <Image
-                  src="/images/logo/logo.svg"
-                  alt="logo"
-                  width={140}
-                  height={30}
-                  className="hidden w-full dark:block"
-                />
+                <p className="font-extrabold">BLASTA</p>
               </Link>
             </div>
             <div className="flex w-full items-center justify-between px-4">
@@ -162,21 +149,40 @@ const Header = () => {
                         <li className="group relative">
                           <Link
                             href={"/profile"}
-                            className={`dark:text-thirdColor flex py-2 text-base text-dark group-hover:opacity-70 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6`}
+                            className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
                           >
-                            Profile
+                            Dashboard
                           </Link>
                         </li>
                         <li className="group relative">
                           <Link
                             href={"/scan"}
-                            className={`dark:text-thirdColor flex py-2 text-base text-dark group-hover:opacity-70 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6`}
+                            className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
                           >
                             Scan
                           </Link>
                         </li>
                       </>
-                    ) : undefined}
+                    ) : (
+                      <>
+                        <li className="group relative">
+                          <Link
+                            href="/signin"
+                            className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
+                          >
+                            Sign in
+                          </Link>
+                        </li>
+                        <li className="group relative">
+                          <Link
+                            href={"/signup"}
+                            className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
+                          >
+                            Sign up
+                          </Link>
+                        </li>
+                      </>
+                    )}
                   </ul>
                 </nav>
               </div>

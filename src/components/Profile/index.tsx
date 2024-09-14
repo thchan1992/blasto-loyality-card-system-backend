@@ -1,6 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { changeBusinessAPI, fetchBusinessAPI } from "@/lib/api";
+import {
+  changeBusinessAPI,
+  fetchBusinessAPI,
+  handlePaymentAPI,
+} from "@/lib/api";
 import useHandleApiErrors from "@/lib/hook/useHandlerApiErrors";
 import { IBusiness } from "@/lib/models/Business";
 import { Business } from "@/lib/types/Business";
@@ -8,6 +12,9 @@ import { Bubblegum_Sans } from "next/font/google";
 import React, { useEffect, useState } from "react";
 import { UploadForm } from "./S3UploadForm";
 import Modal from "../Modal";
+import { Stats } from "./Stats";
+import StampSelector from "./StampSelector";
+import { CreditIndicator } from "./CreditIndicator";
 export const Profile = () => {
   const { handleApiErrors } = useHandleApiErrors();
 
@@ -83,10 +90,10 @@ export const Profile = () => {
     }));
   };
 
-  const handleLoyaltyProgramChange = () => {
+  const handleLoyaltyProgramChange = (newValue) => {
     setBusiness((prevBusiness) => ({
       ...prevBusiness,
-      loyaltyProgram: prevBusiness.loyaltyProgram === 5 ? 10 : 5,
+      loyaltyProgram: (prevBusiness.loyaltyProgram = newValue),
     }));
   };
 
@@ -98,63 +105,121 @@ export const Profile = () => {
     }));
   };
 
+  const handlePayment = async () => {
+    const response = await handlePaymentAPI();
+    const isSuccess = await handleApiErrors(response);
+    if (!isSuccess) return;
+    const data = await response.json();
+    window.location.href = data.data;
+  };
+
   return (
-    <div className="flex items-center justify-center">
-      {!isLoading && (
-        <div>
-          <div className="card card-compact m-4 w-96 bg-base-100 shadow-xl">
-            <figure>
-              <img src={business.logo} alt="Logo" />
-            </figure>
-            <div className="card-body">
-              {business.email}
-              <h2 className="card-title">Profile</h2>
-              Total Stamps: {totalStamps}
-              <p className="flex flex-col items-center justify-center border-2 p-1">
-                <UploadForm
-                  onFileUrlChange={handleLogoChange}
-                  oldFileUrl={business.logo}
-                />
-                <input
-                  value={business.name}
-                  type="text"
-                  placeholder="Business name"
-                  className="input input-bordered w-full max-w-xs"
-                  onChange={handleNameChange}
-                />
-                <label className="swap swap-flip pt-2 text-9xl">
-                  {/* Bind checkbox checked state to the loyalty program value */}
-                  <input
-                    type="checkbox"
-                    checked={business.loyaltyProgram !== 5}
-                    // onChange={handleLoyaltyProgramChange}
-                    onChange={handleLoyaltyProgramChange}
+    <div className="flex items-center justify-center border-red-100 ">
+      <div className="container">
+        <div className="-mx-4 flex flex-wrap">
+          <div className="w-full px-4 lg:w-7/12 xl:w-8/12 ">
+            <div className="flex flex-row justify-between ">
+              {!isLoading && (
+                <div className="card card-compact m-4 mb-10 mt-20 w-96 bg-base-100 shadow-xl lg:w-full xl:w-2/3">
+                  <figure>
+                    <img
+                      src={business.logo}
+                      alt="Logo"
+                      className="h-88 w-88 bg-white object-cover"
+                    />
+                  </figure>
+                  <div className="card-body">
+                    <h2 className="card-title"> {business.email}</h2>
+                    {/* Total Stamps: {totalStamps}
+                    Rewards Redeemed: {business.rewardsRedeemed} */}
+                    <Stats
+                      data={[
+                        { title: "Total Stamps", value: totalStamps, desc: "" },
+                        {
+                          title: "Rewards Redeemed",
+                          value: business.rewardsRedeemed,
+                          desc: "",
+                        },
+                      ]}
+                    />
+                    {/* <div className="stats bg-primary text-primary-content">
+                      <div className="stat">
+                        <div className="stat-title">Account balance</div>
+                        <div className="stat-value">
+                          {business.credit} Stamp(s)
+                        </div>
+                        <div className="stat-actions">
+                          <button
+                            className="btn btn-success btn-sm"
+                            onClick={handlePayment}
+                          >
+                            Add credits
+                          </button>
+                        </div>
+                      </div>
+                    </div> */}
+
+                    <CreditIndicator
+                      credit={business.credit}
+                      handlePayment={handlePayment}
+                    />
+
+                    <div className="glass rounded-box ">
+                      <p className="flex flex-col justify-center p-1 ">
+                        <UploadForm
+                          onFileUrlChange={handleLogoChange}
+                          oldFileUrl={business.logo}
+                        />
+                        <div className="p-3">
+                          <h2 className="mb-4 items-center text-2xl font-bold">
+                            Change Your Business Name
+                          </h2>
+                          <input
+                            value={business.name}
+                            type="text"
+                            placeholder="Business name"
+                            className="input input-bordered  w-full"
+                            onChange={handleNameChange}
+                          />
+                        </div>
+                        {/* <label className="swap swap-flip pt-2 text-9xl">
+                          <input
+                            type="checkbox"
+                            checked={business.loyaltyProgram !== 5}
+                            onChange={handleLoyaltyProgramChange}
+                          />
+                          <div className="swap-on">🔟</div>
+                          <div className="swap-off">5️⃣</div>
+                        </label> */}
+                        <StampSelector
+                          initialValue={business.loyaltyProgram}
+                          onChange={handleLoyaltyProgramChange}
+                        />
+                      </p>
+                    </div>
+                    <div className="card-actions justify-end">
+                      <button
+                        className="btn btn-primary"
+                        onClick={handleChangeBusiness}
+                      >
+                        Change Profile
+                      </button>
+                    </div>
+                  </div>
+
+                  <Modal
+                    message={warningMessage}
+                    visible={showWarning}
+                    onConfirm={() => {
+                      setShowWarning(false);
+                    }}
                   />
-                  {/* Display "10" when checkbox is checked, "5" when unchecked */}
-                  <div className="swap-on">🔟</div>
-                  <div className="swap-off">5️⃣</div>
-                </label>
-                Rewards Redeemed: {business.rewardsRedeemed}
-              </p>
-              <div className="card-actions justify-end">
-                <button
-                  className="btn btn-primary"
-                  onClick={handleChangeBusiness}
-                >
-                  Change Profile
-                </button>
-              </div>
+                </div>
+              )}
             </div>
           </div>
-          <Modal
-            message={warningMessage}
-            visible={showWarning}
-            onConfirm={() => {
-              setShowWarning(false);
-            }}
-          />
         </div>
-      )}
+      </div>
     </div>
   );
 };

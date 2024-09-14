@@ -13,17 +13,19 @@ import { Scanner } from "@yudiel/react-qr-scanner";
 import useHandleApiErrors from "@/lib/hook/useHandlerApiErrors";
 import Image from "next/image";
 import { CreditIndicator } from "../Profile/CreditIndicator";
+import { useIsLoading } from "@/lib/hook/useIsLoading";
 export const Scan = () => {
   const [showCamera, setShowCamera] = useState<boolean>(false);
   const [customerId, setCustomerId] = useState<string>("");
   const { handleApiErrors } = useHandleApiErrors();
   const [isScanAllowed, setIsScanAllowed] = useState<boolean>(true);
   const [credit, setCredit] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { isLoading, setIsLoading } = useIsLoading();
 
   const [showWarning, setShowWarning] = useState<boolean>(false);
   const [warningMessage, setWarningMessage] = useState<string>("");
-  const [needMoreCredit, setNeedMoreCredit] = useState<boolean>(false);
+
   useEffect(() => {
     isSetupFinished();
     setIsLoading(false);
@@ -47,6 +49,7 @@ export const Scan = () => {
   };
 
   const onConfirm = async () => {
+    setIsLoading(true);
     const response = await giveStampAPI(customerId, 1);
     if (response.status === 404) {
       setWarningMessage(
@@ -54,6 +57,7 @@ export const Scan = () => {
       );
       setShowWarning(true);
       setCustomerId("");
+      setIsLoading(false);
       return;
     }
     const isSuccess = await handleApiErrors(response);
@@ -62,9 +66,11 @@ export const Scan = () => {
     setCredit(data.newCredit);
     setWarningMessage("Stamp given.");
     setShowWarning(true);
+    setIsLoading(false);
   };
 
   const onRewardConfirm = async () => {
+    setIsLoading(true);
     const response = await giveRewardAPI(customerId);
     if (response.status === 404) {
       setWarningMessage(
@@ -72,12 +78,14 @@ export const Scan = () => {
       );
       setShowWarning(true);
       setCustomerId("");
+      setIsLoading(false);
       return;
     }
     const isSuccess = await handleApiErrors(response);
     if (!isSuccess) return;
     setWarningMessage("Reward redeemed.");
     setShowWarning(true);
+    setIsLoading(false);
   };
 
   const handlePayment = async () => {
@@ -101,12 +109,7 @@ export const Scan = () => {
       res = true;
     }
     setIsScanAllowed(res);
-    if (data.data.credit <= 0) {
-      res = true;
-    } else {
-      res = false;
-    }
-    setNeedMoreCredit(res);
+
     setCredit(data.data.credit);
   };
   return (
@@ -167,7 +170,7 @@ export const Scan = () => {
                       )}
                     </button>
                   )}
-                  {customerId !== "" && isScanAllowed ? (
+                  {customerId !== "" && isScanAllowed && !isLoading ? (
                     <div>
                       <button
                         className="btn btn-primary m-1"

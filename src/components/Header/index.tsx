@@ -165,7 +165,7 @@ const Header = () => {
                       </>
                     ) : (
                       <>
-                        <li className="group relative">
+                        {/* <li className="group relative">
                           <Link
                             href="/signin"
                             className="block rounded py-2.5 text-sm text-dark hover:text-primary dark:text-white/70 dark:hover:text-white lg:px-3"
@@ -180,7 +180,7 @@ const Header = () => {
                           >
                             Sign up
                           </Link>
-                        </li>
+                        </li> */}
                       </>
                     )}
                   </ul>
@@ -208,9 +208,9 @@ const Header = () => {
                     <button className="btn btn-active">Sign Out</button>
                   </SignOutButton>
                 )}
-                <div>
+                {/* <div>
                   <ThemeToggler />
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

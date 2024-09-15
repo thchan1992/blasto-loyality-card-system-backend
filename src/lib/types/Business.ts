@@ -6,4 +6,5 @@ export type Business = {
   loyaltyProgram: number;
   rewardsRedeemed: number;
   credit: number;
+  stampGiven: number;
 };

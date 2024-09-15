@@ -9,6 +9,7 @@ export const useBusiness = () => {
     loyaltyProgram: 5,
     rewardsRedeemed: 0,
     credit: 0,
+    stampGiven: 0,
   });
 
   const handleNameChange = useCallback(

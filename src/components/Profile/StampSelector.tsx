@@ -20,7 +20,7 @@ const StampSelector = ({ initialValue, onChange }) => {
   return (
     <div className="m-3 flex flex-col items-center space-y-4 rounded-box border-2 border-white p-3">
       <h2 className="mb-4 text-2xl font-bold">Choose Your Stamp Package</h2>
-      <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+      <div className="flex flex-col space-y-4 ">
         {options.map((option) => (
           <div key={option.value} className="w-full sm:w-auto">
             <input

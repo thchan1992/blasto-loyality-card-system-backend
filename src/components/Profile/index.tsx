@@ -92,74 +92,80 @@ export const Profile = () => {
           <div className="w-full px-4 lg:w-7/12 xl:w-8/12 ">
             <div className="flex flex-row justify-between ">
               {!isLoading && (
-                <div className="card card-compact m-4 mb-10 mt-20 w-96 bg-base-100 shadow-xl lg:w-full xl:w-2/3">
-                  <figure>
-                    <img
-                      src={business.logo}
-                      alt="Logo"
-                      className="h-88 w-88 bg-white object-cover"
+                <div className=" grid grid-cols-1 gap-x-4 gap-y-0 md:grid-cols-2 lg:grid-cols-2">
+                  <div className="card card-compact m-4 mb-5 mt-5 w-full bg-base-100 shadow-xl">
+                    <figure>
+                      <img
+                        src={business.logo}
+                        alt="Logo"
+                        className="h-88 w-88 bg-white object-cover"
+                      />
+                    </figure>
+                    <div className="card-body">
+                      <h2 className="card-title"> {business.email}</h2>
+                      <Stats
+                        data={[
+                          {
+                            title: "Total Stamps",
+                            value: totalStamps,
+                            desc: "",
+                          },
+                          {
+                            title: "Rewards Redeemed",
+                            value: business.rewardsRedeemed,
+                            desc: "",
+                          },
+                        ]}
+                      />
+                      <CreditIndicator
+                        credit={business.credit}
+                        handlePayment={handlePayment}
+                      />
+                    </div>
+                    <Modal
+                      message={warningMessage}
+                      visible={showWarning}
+                      onConfirm={() => {
+                        setShowWarning(false);
+                      }}
                     />
-                  </figure>
-                  <div className="card-body">
-                    <h2 className="card-title"> {business.email}</h2>
-                    {/* Total Stamps: {totalStamps}
-                    Rewards Redeemed: {business.rewardsRedeemed} */}
-                    <Stats
-                      data={[
-                        { title: "Total Stamps", value: totalStamps, desc: "" },
-                        {
-                          title: "Rewards Redeemed",
-                          value: business.rewardsRedeemed,
-                          desc: "",
-                        },
-                      ]}
-                    />
-                    <CreditIndicator
-                      credit={business.credit}
-                      handlePayment={handlePayment}
-                    />
-
-                    <div className="glass rounded-box ">
-                      <p className="flex flex-col justify-center p-1 ">
-                        <UploadForm
-                          onFileUrlChange={handleLogoChange}
-                          oldFileUrl={business.logo}
-                        />
-                        <div className="p-3">
-                          <h2 className="mb-4 items-center text-2xl font-bold">
-                            Change Your Business Name
-                          </h2>
-                          <input
-                            value={business.name}
-                            type="text"
-                            placeholder="Business name"
-                            className="input input-bordered  w-full"
-                            onChange={handleNameChange}
+                  </div>
+                  <div className="card card-compact m-4 mb-5 mt-5 w-full bg-base-100 shadow-xl">
+                    <div className="card-body">
+                      <div className="glass rounded-box ">
+                        <p className="flex flex-col justify-center p-1 ">
+                          <UploadForm
+                            onFileUrlChange={handleLogoChange}
+                            oldFileUrl={business.logo}
                           />
-                        </div>
-                        <StampSelector
-                          initialValue={business.loyaltyProgram}
-                          onChange={handleLoyaltyProgramChange}
-                        />
-                      </p>
+                          <div className="p-3">
+                            <h2 className="mb-4 items-center text-2xl font-bold">
+                              Change Your Business Name
+                            </h2>
+                            <input
+                              value={business.name}
+                              type="text"
+                              placeholder="Business name"
+                              className="input input-bordered  w-full"
+                              onChange={handleNameChange}
+                            />
+                          </div>
+                          <StampSelector
+                            initialValue={business.loyaltyProgram}
+                            onChange={handleLoyaltyProgramChange}
+                          />
+                        </p>
+                      </div>
                     </div>
                     <div className="card-actions justify-end">
                       <button
-                        className="btn btn-primary"
+                        className="btn btn-primary m-5"
                         onClick={handleChangeBusiness}
                       >
                         Change Profile
                       </button>
                     </div>
                   </div>
-
-                  <Modal
-                    message={warningMessage}
-                    visible={showWarning}
-                    onConfirm={() => {
-                      setShowWarning(false);
-                    }}
-                  />
                 </div>
               )}
             </div>

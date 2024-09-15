@@ -19,7 +19,7 @@ const Features = () => {
             <div>
               <SectionTitle
                 title="Ask your customers to try our Blasta App"
-                paragraph="Available on both Platform"
+                paragraph="Coming Soon on Both Platform"
                 center
               />
               <div className="flex flex-row justify-evenly">

@@ -92,8 +92,8 @@ export const Profile = () => {
           <div className="w-full px-4 lg:w-7/12 xl:w-8/12 ">
             <div className="flex flex-row justify-between ">
               {!isLoading && (
-                <div className=" grid grid-cols-1 gap-x-4 gap-y-0 md:grid-cols-2 lg:grid-cols-2">
-                  <div className="card card-compact m-4 mb-5 mt-5 w-full bg-base-100 shadow-xl">
+                <div className=" grid grid-cols-1 gap-x-4 gap-y-0 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 ">
+                  <div className="card card-compact m-4 mb-5 mt-5 w-full bg-base-100 shadow-xl ">
                     <figure>
                       <img
                         src={business.logo}

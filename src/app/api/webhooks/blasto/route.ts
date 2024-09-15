@@ -79,6 +79,7 @@ export async function POST(req: Request) {
         loyaltyProgram: 5,
         rewardsRedeemed: 0,
         credit: 100,
+        stampGiven: 0,
       });
       await newBusiness.save();
     }

@@ -12,6 +12,8 @@ import { useUtility } from "@/lib/hook/useUtility";
 import { useScanner } from "@/lib/hook/useScanner";
 import { usePayment } from "@/lib/hook/usePayment";
 import { useStampHandler } from "@/lib/hook/useStampHandler";
+import { Camera } from "./Camera";
+import { CameraButton } from "./CameraButton";
 
 export const Scan = () => {
   const { handleApiErrors } = useHandleApiErrors();
@@ -89,59 +91,21 @@ export const Scan = () => {
                   <h2>
                     {customerId ? "Customer ID " + customerId : undefined}
                   </h2>
-                  {showCamera ? (
-                    <div className="max-h-96 max-w-96 border-2 border-gray-500">
-                      <Scanner
-                        constraints={{ facingMode: "environment" }}
-                        onScan={(result) => handleDecode(result)}
-                        onError={handleError}
-                      />
-                    </div>
-                  ) : (
-                    <div className="h-96 max-h-96 w-96 max-w-96 rounded-box border-2 border-gray-500"></div>
-                  )}
-                  {isScanAllowed && (
-                    <button
-                      className="btn btn-primary m-1 rounded-full"
-                      onClick={() => {
-                        showCamera ? setShowCamera(false) : setShowCamera(true);
-                      }}
-                    >
-                      {showCamera ? (
-                        <Image
-                          src="/images/scanner/camera-off.svg"
-                          alt="logo"
-                          className="hidden w-full dark:block"
-                          width={140}
-                          height={30}
-                        />
-                      ) : (
-                        <Image
-                          src="/images/scanner/camera-01.svg"
-                          alt="logo"
-                          className="hidden w-full dark:block"
-                          width={140}
-                          height={30}
-                        />
-                      )}
-                    </button>
-                  )}
-                  {customerId !== "" && isScanAllowed && !isLoading ? (
-                    <div>
-                      <button
-                        className="btn btn-primary m-1"
-                        onClick={onGiveStampConfirm}
-                      >
-                        Give Stamp
-                      </button>
-                      <button
-                        className="btn btn-primary m-1"
-                        onClick={onGiveRewardConfirm}
-                      >
-                        Give Reward
-                      </button>
-                    </div>
-                  ) : undefined}
+                  <Camera
+                    handleDecode={handleDecode}
+                    showCamera={showCamera}
+                    handleError={handleError}
+                  />
+                  <CameraButton
+                    showCamera={showCamera}
+                    setShowCamera={setShowCamera}
+                    isScanAllowed={isScanAllowed}
+                    customerId={customerId}
+                    isLoading={isLoading}
+                    onGiveStampConfirm={onGiveStampConfirm}
+                    onGiveRewardConfirm={onGiveRewardConfirm}
+                  />
+
                   <div>
                     {!isScanAllowed && (
                       <div>

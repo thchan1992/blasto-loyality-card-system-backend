@@ -1,40 +1,26 @@
-import { useScanner } from "@/lib/hook/useScanner";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import Image from "next/image";
 import React from "react";
 
-export const CameraButton = (
-  {
-    // showCamera,
-    // setShowCamera,
-    // isScanAllowed,
-  }: {
-    // showCamera:boolean;
-    // setShowCamera: React.Dispatch<React.SetStateAction<boolean>>;
-    // isScanAllowed:boolean;
-  },
-) => {
-  const {
-    showCamera,
-    setShowCamera,
-    isScanAllowed,
-    handleDecode,
-    handleError,
-  } = useScanner();
-
+export const CameraButton = ({
+  showCamera,
+  setShowCamera,
+  isScanAllowed,
+  customerId,
+  isLoading,
+  onGiveStampConfirm,
+  onGiveRewardConfirm,
+}: {
+  showCamera: boolean;
+  setShowCamera: React.Dispatch<React.SetStateAction<boolean>>;
+  isScanAllowed: boolean;
+  customerId: string;
+  isLoading: boolean;
+  onGiveStampConfirm: () => Promise<void>;
+  onGiveRewardConfirm: () => Promise<void>;
+}) => {
   return (
     <>
-      {showCamera ? (
-        <div className="max-h-96 max-w-96 border-2 border-gray-500">
-          <Scanner
-            constraints={{ facingMode: "environment" }}
-            onScan={(result) => handleDecode(result)}
-            onError={handleError}
-          />
-        </div>
-      ) : (
-        <div className="h-96 max-h-96 w-96 max-w-96 rounded-box border-2 border-gray-500"></div>
-      )}
       {isScanAllowed && (
         <button
           className="btn btn-primary m-1 rounded-full"
@@ -61,6 +47,16 @@ export const CameraButton = (
           )}
         </button>
       )}
+      {customerId !== "" && isScanAllowed && !isLoading ? (
+        <div>
+          <button className="btn btn-primary m-1" onClick={onGiveStampConfirm}>
+            Give Stamp
+          </button>
+          <button className="btn btn-primary m-1" onClick={onGiveRewardConfirm}>
+            Give Reward
+          </button>
+        </div>
+      ) : undefined}
     </>
   );
 };

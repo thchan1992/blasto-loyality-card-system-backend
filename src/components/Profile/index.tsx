@@ -1,12 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import {
-  changeBusinessAPI,
-  fetchBusinessAPI,
-  handlePaymentAPI,
-} from "@/lib/api";
+import { changeBusinessAPI, fetchBusinessAPI } from "@/lib/api";
 import useHandleApiErrors from "@/lib/hook/useHandlerApiErrors";
-import { Business } from "@/lib/types/Business";
 import React, { useEffect, useState } from "react";
 import { UploadForm } from "./S3UploadForm";
 import Modal from "../Modal";
@@ -14,6 +9,8 @@ import { Stats } from "./Stats";
 import StampSelector from "./StampSelector";
 import { CreditIndicator } from "./CreditIndicator";
 import { useUtility } from "@/lib/hook/useUtility";
+import { usePayment } from "@/lib/hook/usePayment";
+import { useBusiness } from "@/lib/hook/useBusiness";
 
 export const Profile = () => {
   const { handleApiErrors } = useHandleApiErrors();
@@ -26,16 +23,15 @@ export const Profile = () => {
     showWarning,
     setShowWarning,
   } = useUtility();
+  const { handlePayment } = usePayment();
 
-  const [business, setBusiness] = useState<Business>({
-    clerkUserId: "",
-    name: "",
-    email: "",
-    logo: "",
-    loyaltyProgram: 5,
-    rewardsRedeemed: 0,
-    credit: 0,
-  });
+  const {
+    business,
+    setBusiness,
+    handleNameChange,
+    handleLoyaltyProgramChange,
+  } = useBusiness();
+
   useEffect(() => {
     fetchBusiness();
     setIsLoading(false);
@@ -44,7 +40,6 @@ export const Profile = () => {
   }, []);
 
   const handleChangeBusiness = async () => {
-    // try {
     if (business.name.length < 5) {
       setWarningMessage("The business name must be longer than 5 characters.");
       setShowWarning(true);
@@ -82,35 +77,12 @@ export const Profile = () => {
     }
   };
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedName = e.target.value;
-    setBusiness((prevBusiness) => ({
-      ...prevBusiness,
-      name: updatedName,
-    }));
-  };
-
-  const handleLoyaltyProgramChange = (newValue) => {
-    setBusiness((prevBusiness) => ({
-      ...prevBusiness,
-      loyaltyProgram: (prevBusiness.loyaltyProgram = newValue),
-    }));
-  };
-
   const handleLogoChange = (url: string) => {
     const updatedLogo = url;
     setBusiness((prevBusiness) => ({
       ...prevBusiness,
       logo: updatedLogo,
     }));
-  };
-
-  const handlePayment = async () => {
-    const response = await handlePaymentAPI();
-    const isSuccess = await handleApiErrors(response);
-    if (!isSuccess) return;
-    const data = await response.json();
-    window.location.href = data.data;
   };
 
   return (
@@ -142,23 +114,6 @@ export const Profile = () => {
                         },
                       ]}
                     />
-                    {/* <div className="stats bg-primary text-primary-content">
-                      <div className="stat">
-                        <div className="stat-title">Account balance</div>
-                        <div className="stat-value">
-                          {business.credit} Stamp(s)
-                        </div>
-                        <div className="stat-actions">
-                          <button
-                            className="btn btn-success btn-sm"
-                            onClick={handlePayment}
-                          >
-                            Add credits
-                          </button>
-                        </div>
-                      </div>
-                    </div> */}
-
                     <CreditIndicator
                       credit={business.credit}
                       handlePayment={handlePayment}
@@ -182,15 +137,6 @@ export const Profile = () => {
                             onChange={handleNameChange}
                           />
                         </div>
-                        {/* <label className="swap swap-flip pt-2 text-9xl">
-                          <input
-                            type="checkbox"
-                            checked={business.loyaltyProgram !== 5}
-                            onChange={handleLoyaltyProgramChange}
-                          />
-                          <div className="swap-on">🔟</div>
-                          <div className="swap-off">5️⃣</div>
-                        </label> */}
                         <StampSelector
                           initialValue={business.loyaltyProgram}
                           onChange={handleLoyaltyProgramChange}

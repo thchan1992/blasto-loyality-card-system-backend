@@ -24,7 +24,7 @@ const businessSchema = new Schema<IBusiness>({
   },
   rewardsRedeemed: { type: Number, required: true },
   credit: { type: Number, required: true },
-  stampGiven: { type: Number, required: true, default: 0 },
+  stampGiven: { type: Number, required: true },
 });
 
 const Business: Model<IBusiness> =

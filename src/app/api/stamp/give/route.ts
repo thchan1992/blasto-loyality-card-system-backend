@@ -25,6 +25,7 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
 
     if (!validationResult.success) {
       const validationErrors = validationResult.error.errors;
+      console.log(validationErrors, "validationErrors");
       return NextResponse.json(
         { message: "Invalid data from Z", errors: validationErrors },
         { status: 400 },
@@ -63,6 +64,7 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
 
     //give one stamp to customer:
     //step one: check if the customer is in the database
+    console.log(customerId, "customer ID");
     const customer = await Customer.findOne({ clerkUserId: customerId });
 
     if (!customer) {

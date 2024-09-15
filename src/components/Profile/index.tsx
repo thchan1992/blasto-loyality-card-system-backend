@@ -15,6 +15,7 @@ import { useBusiness } from "@/lib/hook/useBusiness";
 export const Profile = () => {
   const { handleApiErrors } = useHandleApiErrors();
   const [totalStamps, setTotalStamps] = useState<number>(0);
+  const [potentialRewards, setPotentialRewards] = useState<number>(0);
   const {
     isLoading,
     setIsLoading,
@@ -61,6 +62,7 @@ export const Profile = () => {
       const isSuccess = await handleApiErrors(response);
       if (!isSuccess) return;
       const data = await response.json();
+      console.log(data.data, " business data");
       const businessFetched = {
         clerkUserId: data.data.clerkUserId,
         email: data.data.email,
@@ -69,9 +71,17 @@ export const Profile = () => {
         name: data.data.name,
         rewardsRedeemed: data.data.rewardsRedeemed,
         credit: data.data.credit,
+        stampGiven: data.data.stampGiven,
       };
       setBusiness(businessFetched);
-      setTotalStamps(data.totalStamps);
+      // setTotalStamps(businessFetch);
+      setPotentialRewards(
+        Math.floor(data.totalStamps / data.data.loyaltyProgram),
+      );
+
+      console.log(potentialRewards);
+      console.log(business.stampGiven);
+      console.log(business.rewardsRedeemed);
     } catch (e) {
       console.log(e.message);
     }
@@ -106,8 +116,13 @@ export const Profile = () => {
                       <Stats
                         data={[
                           {
-                            title: "Total Stamps",
-                            value: totalStamps,
+                            title: "Potenital Rewards",
+                            value: potentialRewards,
+                            desc: "",
+                          },
+                          {
+                            title: "Total Stamps Given",
+                            value: business.stampGiven,
                             desc: "",
                           },
                           {

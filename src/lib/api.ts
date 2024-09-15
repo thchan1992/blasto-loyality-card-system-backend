@@ -18,6 +18,7 @@ export const uploadBusinessImageAPI = async (formData: FormData) => {
 
     return response;
   } catch (error) {
+    console.log(error, "error");
     throw new Error(`Network Error Occurred`);
   }
 };

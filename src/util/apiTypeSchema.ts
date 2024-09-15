@@ -7,9 +7,9 @@ export const businessUpdateSchema = z.object({
   clerkUserId: z.string(),
 });
 
-export const formDataSchema = z.object({
-  oldFileUrl: z.string().optional(),
-});
+// export const formDataSchema = z.object({
+//   oldFileUrl: z.string().optional(),
+// });
 
 export const giveStampSchema = z.object({
   customerId: z.string(),

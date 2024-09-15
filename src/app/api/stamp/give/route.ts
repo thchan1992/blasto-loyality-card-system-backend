@@ -57,6 +57,7 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
       return NextResponse.json({ message: "Fund not enough" }, { status: 404 });
     } else {
       business.credit--;
+      business.stampGiven++;
       await business.save({ session });
     }
 

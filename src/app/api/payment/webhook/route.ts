@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
           { status: 404 },
         );
       }
-      business.credit = business.credit + 100;
+      business.credit = business.credit + 500;
 
       await business.save();
 

@@ -1,11 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import {
-  fetchBusinessAPI,
-  giveRewardAPI,
-  giveStampAPI,
-  handlePaymentAPI,
-} from "@/lib/api";
+import { fetchBusinessAPI } from "@/lib/api";
 import Modal from "../Modal";
 import React, { useEffect, useState } from "react";
 
@@ -15,9 +10,21 @@ import Image from "next/image";
 import { CreditIndicator } from "../Profile/CreditIndicator";
 import { useUtility } from "@/lib/hook/useUtility";
 import { useScanner } from "@/lib/hook/useScanner";
+import { usePayment } from "@/lib/hook/usePayment";
+import { useStampHandler } from "@/lib/hook/useStampHandler";
+
 export const Scan = () => {
   const { handleApiErrors } = useHandleApiErrors();
   const [credit, setCredit] = useState<number>(0);
+  const { handlePayment } = usePayment();
+  const {
+    isLoading,
+    setIsLoading,
+    warningMessage,
+    setWarningMessage,
+    showWarning,
+    setShowWarning,
+  } = useUtility();
 
   const {
     showCamera,
@@ -30,68 +37,21 @@ export const Scan = () => {
     handleError,
   } = useScanner();
 
-  const {
-    isLoading,
+  const { onGiveStampConfirm, onGiveRewardConfirm } = useStampHandler({
     setIsLoading,
-    warningMessage,
+    customerId,
     setWarningMessage,
-    showWarning,
     setShowWarning,
-  } = useUtility();
+    setCustomerId,
+    setCredit,
+    setIsScanAllowed,
+  });
 
   useEffect(() => {
     isSetupFinished();
     setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const onConfirm = async () => {
-    setIsLoading(true);
-    const response = await giveStampAPI(customerId, 1);
-    if (response.status === 404) {
-      setWarningMessage(
-        "Customer ID not found. If the issue persists, please contact us for support.",
-      );
-      setShowWarning(true);
-      setCustomerId("");
-      setIsLoading(false);
-      return;
-    }
-    const isSuccess = await handleApiErrors(response);
-    if (!isSuccess) return;
-    const data = await response.json();
-    setCredit(data.newCredit);
-    setWarningMessage("Stamp given.");
-    setShowWarning(true);
-    setIsLoading(false);
-  };
-
-  const onRewardConfirm = async () => {
-    setIsLoading(true);
-    const response = await giveRewardAPI(customerId);
-    if (response.status === 404) {
-      setWarningMessage(
-        "Customer ID not found or Customer do not have any reward. If the issue persists, please contact us for support.",
-      );
-      setShowWarning(true);
-      setCustomerId("");
-      setIsLoading(false);
-      return;
-    }
-    const isSuccess = await handleApiErrors(response);
-    if (!isSuccess) return;
-    setWarningMessage("Reward redeemed.");
-    setShowWarning(true);
-    setIsLoading(false);
-  };
-
-  const handlePayment = async () => {
-    const response = await handlePaymentAPI();
-    const isSuccess = await handleApiErrors(response);
-    if (!isSuccess) return;
-    const data = await response.json();
-    window.location.href = data.data;
-  };
 
   const isSetupFinished = async (): Promise<boolean> => {
     const response = await fetchBusinessAPI();
@@ -100,15 +60,14 @@ export const Scan = () => {
     const data = await response.json();
     let res: boolean;
     if (data.data.name === "") {
-      console.log(data.data.name, "data.data.name");
       res = false;
     } else {
       res = true;
     }
     setIsScanAllowed(res);
-
     setCredit(data.data.credit);
   };
+
   return (
     <div className="flex items-center justify-center border-red-100 ">
       <div className="container">
@@ -171,13 +130,13 @@ export const Scan = () => {
                     <div>
                       <button
                         className="btn btn-primary m-1"
-                        onClick={onConfirm}
+                        onClick={onGiveStampConfirm}
                       >
                         Give Stamp
                       </button>
                       <button
                         className="btn btn-primary m-1"
-                        onClick={onRewardConfirm}
+                        onClick={onGiveRewardConfirm}
                       >
                         Give Reward
                       </button>

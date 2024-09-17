@@ -1,61 +1,102 @@
-# Startup - Free Next.js Startup Website Template
+# Blasto - Digital Gift Card System (SaaS)
 
-Startup free, open-source, and premium-quality startup website template for Next.js comes with everything you need to launch a startup, business, or SaaS website, including all essential sections, components, and pages.
+<img src="./landing-page-screenshot.png" alt="Blasto Banner" width="800"/>
 
-If you're looking for a high-quality and visually appealing, feature-rich Next.js Template for your next startup, SaaS, or business website, this is the perfect choice and starting point for you!
+## Live Demo
 
-### ✨ Key Features
-- Crafted for Startup and SaaS Business
-- Next.js and Tailwind CSS
-- All Essential Business Sections and Pages
-- High-quality and Clean Design
-- Dark and Light Version
-- TypeScript Support
-and Much More ...
+Check out the [live demo of Blasto](https://blasto-red.vercel.app) to see the system in action!
 
-### 🙌 Detailed comparison between the Free and Pro versions of Startup
+## Description
 
-| Feature             | Free | Pro |
-|---------------------|------------|----------|
-| Next.js Landing Page             | ✅ Yes      | ✅ Yes      |
-| All The Integrations - Auth, DB, Payments, Blog and many more ...             | ❌ No      | ✅ Yes |
-| Homepage Variations             | 1      | 2 |
-| Additional SaaS Pages and Components             | ❌ No      | ✅ Yes |
-| Functional Blog with Sanity       | ❌ No      | ✅ Yes | ✅ Yes |
-| Use with Commercial Projects            | ✅ Yes      | ✅ Yes      |
-| Lifetime Free Updates             | ✅ Yes      | ✅ Yes |
-| Email Support       | ❌ No         | ✅ Yes       |
-| Community Support         | ✅ Yes         | ✅ Yes       |
+Blasto is a lightweight gift card system designed to help businesses collect stamps from their customers. This repository contains both the front-end and back-end components of the SaaS platform. Customers can later use the "Blasta app" (located in a separate repository) to redeem their rewards.
 
+## Key Features
 
-### [🔥 Get Startup Pro](https://nextjstemplates.com/templates/saas-starter-startup)
+- Issue stamps to customers by scanning their Blasta app
+- Distribute rewards to customers by scanning the Blasta app
+- Track the number of stamps given away
+- Monitor remaining rewards available for redemption
+- Modify business details
+- Purchase additional stamps using Stripe integration
 
-[![Startup Pro](https://raw.githubusercontent.com/NextJSTemplates/startup-nextjs/main/startup-pro.webp)](https://nextjstemplates.com/templates/saas-starter-startup)
+## Technologies Used
 
-Startup Pro - Expertly crafted for fully-functional, high-performing SaaS startup websites. Comes with with Authentication, Database, Blog, and all the essential integrations necessary for SaaS business sites.
+- Next.js (Frontend and API Routes)
+- MongoDB
+- Mongoose
+- Clerk Authentication
+- Stripe Payment Integration
+- DaisyUI
+- Vercel (Deployment)
+- Zod (Schema Validation)
+- AWS S3 (File Storage)
+- Postmark (Email Service)
 
+## Installation
 
-### [🚀 View Free Demo](https://startup.nextjstemplates.com/)
+To set up the project locally, follow these steps:
 
-### [🚀 View Pro Demo](https://startup-pro.nextjstemplates.com/)
+1. Clone the repository
 
-### [📦 Download](https://nextjstemplates.com/templates/startup)
+   ```
+   git clone https://github.com/your-username/blasto.git
+   cd blasto
+   ```
 
-### [🔥 Get Pro](https://nextjstemplates.com/templates/saas-starter-startup)
+2. Install dependencies
 
-### [🔌 Documentation](https://nextjstemplates.com/docs)
+   ```
+   npm install
+   ```
 
-### ⚡ Deploy Now
+3. Set up environment variables (create a `.env.local` file in the root directory)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FNextJSTemplates%2Fstartup-nextjs)
+   ```
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
+   CLERK_SECRET_KEY=your_clerk_secret_key
+   WEBHOOK_SECRE=your_key
+   MONGODB_URI=your_mongodb_connection_string
+   NEXT_PUBLIC_AWS_S3_REGION=your_key
+   NEXT_PUBLIC_AWS_S3_ACCESS_KEY_ID=your_key
+   NEXT_PUBLIC_AWS_S3_SECRET_ACCESS_KEY=your_key
+   NEXT_PUBLIC_AWS_S3_BUCKET_NAME=your_bucket_name
+   STRIPE_SECRET_KEY=your_stripe_secret_key
+   STRIPE_WEBHOOK_SECRET=your_stripe_webhook_key
+   STRIPE_PRICE_ID=your_stripe_price_id
+   POSTMARK_API_TOKEN=your_postmark_key
+   SUPPORT_EMAIL=your_support_email_address
+   ```
 
-[![Deploy with Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/NextJSTemplates/startup-nextjs)
+4. Run the development server
 
+   ```
+   npm run dev
+   ```
 
-### 📄 License
-Startup is 100% free and open-source, feel free to use with your personal and commercial projects.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-### 💜 Support
-If you like the template, please star this repository to inspire the team to create more stuff like this and reach more users like you!
+## Usage
 
-### ✨ Explore and Download - Free [Next.js Templates](https://nextjstemplates.com)
+[Provide brief instructions on how to use the main features of the application, including any necessary screenshots or code examples]
+
+## Deployment
+
+This project is deployed on Vercel. To deploy your own instance:
+
+1. Push your code to your own GitHub repository
+2. Connect your Vercel account to your GitHub repository
+3. Configure the environment variables in Vercel
+4. Deploy the project
+
+## Contributing
+
+[Provide guidelines for how others can contribute to the project, if applicable]
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License is a permissive license that allows for reuse within proprietary software provided all copies of the licensed software include a copy of the MIT License terms and the copyright notice.
+
+## Contact
+
+For any inquiries or support, please contact [Han] at [info@windyrecipe.com].

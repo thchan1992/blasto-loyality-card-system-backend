@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
   try {
     const stripeSession = await stripe.checkout.sessions.create({
       mode: "payment",
-      success_url: "http://localhost:3000",
-      cancel_url: "https://www.google.com",
+      success_url: "https://blasto-red.vercel.app/profile",
+      cancel_url: "https://blasto-red.vercel.app/profile",
       payment_method_types: ["card"],
       customer_email: user.emailAddresses[0].emailAddress,
 

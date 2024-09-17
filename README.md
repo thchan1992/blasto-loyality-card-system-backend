@@ -8,7 +8,7 @@ Check out the [live demo of Blasto](https://blasto-red.vercel.app) to see the sy
 
 ## Description
 
-Blasto is a lightweight gift card system designed to help businesses collect stamps from their customers. This repository contains both the front-end and back-end components of the SaaS platform. Customers can later use the "Blasta app" (located in a separate repository) to redeem their rewards.
+Blasto is a lightweight gift card system designed to help businesses collect stamps from their customers. This repository contains both the front-end and back-end components of the SaaS platform. Customers can later use the [Blasta](https://github.com/thchan1992/blasta) to redeem their rewards.
 
 ## Key Features
 
@@ -75,10 +75,6 @@ To set up the project locally, follow these steps:
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-## Usage
-
-[Provide brief instructions on how to use the main features of the application, including any necessary screenshots or code examples]
-
 ## Deployment
 
 This project is deployed on Vercel. To deploy your own instance:
@@ -88,10 +84,6 @@ This project is deployed on Vercel. To deploy your own instance:
 3. Configure the environment variables in Vercel
 4. Deploy the project
 
-## Contributing
-
-[Provide guidelines for how others can contribute to the project, if applicable]
-
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
@@ -99,4 +91,4 @@ MIT License is a permissive license that allows for reuse within proprietary sof
 
 ## Contact
 
-For any inquiries or support, please contact [Han] at [info@windyrecipe.com].
+For any inquiries or support, please contact Han at info@windyrecipe.com.

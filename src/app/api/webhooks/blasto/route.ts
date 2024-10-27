@@ -62,28 +62,37 @@ export async function POST(req: Request) {
 
     console.log(evt.data.unsafe_metadata.accountType, "account type");
 
-    await dbConnect();
-    if (evt.data.unsafe_metadata.accountType) {
-      const newCustomer = new Customer({
-        clerkUserId: evt.data.id,
-        email: evt.data.email_addresses[0].email_address,
-        stamps: [],
-      });
-      await newCustomer.save();
-    } else {
-      const newBusiness = new Business({
-        clerkUserId: evt.data.id,
-        name: "",
-        email: evt.data.email_addresses[0].email_address,
-        logo: "",
-        loyaltyProgram: 5,
-        rewardsRedeemed: 0,
-        credit: 100,
-        stampGiven: 0,
-      });
-      await newBusiness.save();
+    try {
+      console.log("connecting to the database");
+      await dbConnect();
+      console.log("finished connecting to the database");
+      if (evt.data.unsafe_metadata.accountType) {
+        const newCustomer = new Customer({
+          clerkUserId: evt.data.id,
+          email: evt.data.email_addresses[0].email_address,
+          stamps: [],
+        });
+        await newCustomer.save();
+      } else {
+        console.log("creating business account");
+        const newBusiness = new Business({
+          clerkUserId: evt.data.id,
+          name: "",
+          email: evt.data.email_addresses[0].email_address,
+          logo: "",
+          loyaltyProgram: 5,
+          rewardsRedeemed: 0,
+          credit: 100,
+          stampGiven: 0,
+        });
+        console.log("saving business account");
+        await newBusiness.save();
+        console.log("finished saving ");
+        return new Response("", { status: 200 });
+      }
+    } catch (e) {
+      console.log(e, "Error from database");
+      return new Response(e, { status: 500 });
     }
   }
-
-  return new Response("", { status: 200 });
 }

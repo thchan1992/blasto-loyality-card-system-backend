@@ -73,6 +73,8 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
   try {
     const formData = await req.formData();
 
+    console.log(formData, "form data received");
+
     // const parsedData = formDataSchema.safeParse({
     //   oldFileUrl: formData.get("oldFileUrl"),
     // });
@@ -82,7 +84,9 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     //   return NextResponse.json({ error: "Type not valid" }, { status: 400 });
     // }
     const file = formData.get("file");
+    console.log(file, "extracting file from the formData");
     const oldFileUrl = formData.get("oldFileUrl");
+    console.log(file, "extracting the old file from the formData");
 
     if (!file || !(file instanceof File)) {
       return NextResponse.json(
@@ -106,11 +110,16 @@ export const POST = rateLimitMiddleware(async (req: NextRequest) => {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
+    console.log(buffer, "buffer");
     const fileName = `${Date.now()}-${file.name}`;
+    console.log(fileName, "file Name, and ready to upload to S3");
     const fileUrl = await uploadFileToS3(buffer, fileName, file.type);
 
+    console.log("update to S3 completed, and link is:", fileUrl);
     if (oldFileUrl) {
+      console.log(oldFileUrl, "deleting the old file url");
       await deleteFileFromS3(oldFileUrl);
+      console.log("finished deleting");
     }
 
     return NextResponse.json({ success: true, fileUrl }, { status: 200 });

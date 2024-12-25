@@ -4,7 +4,7 @@
 
 ## Live Demo
 
-Check out the [live demo of Blasto](https://blasto-red.vercel.app) to see the system in action!
+Check out the [live demo of Blasto](https://loy.kuberio.com/) to see the system in action!
 
 ## Description
 
